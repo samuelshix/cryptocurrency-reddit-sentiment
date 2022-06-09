@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "chartjs-plugin-annotation": "^1.4.0",
+    "snoowrap": "^1.23.0"
+  }
+}

@@ -1,0 +1,129 @@
+{% extends 'app/index.html'%}
+
+{%block scripts%} 
+<script>
+    // jquery function
+    $(document).ready(function(){
+        var ctx = document.getElementById("cryptoCap").getContext("2d");
+        var comments_element = document.getElementById("comments");
+        var comments_date = document.getElementById("comments_date");
+var myChart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    // labels: ["2015-03-15T13:03:00Z", "2015-03-25T13:02:00Z", "2015-04-25T14:12:00Z"],
+    datasets: [{
+      // borderColor: 'rgba(242, 167, 54, 1)',
+      // backgroundColor: 'rgba(242, 167, 54, .3)',
+      label: 'Cryptocurrency Total Market Cap',
+      pointRadius: 5,
+      data: [
+            {%for data in qs%}
+            {x: '{{data.date}}', y:{{data.crypto_cap}}},
+            {%endfor%}
+        ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    plugins: {
+      annotation: {
+        annotations: {
+          box1: {
+            
+          }
+        }
+      }
+    },
+    elements: {
+        line: {
+            tension: 0.1
+        }
+    },
+    scales: {
+        xAxes: [{
+            type: 'time',
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero: false,
+            callback: function(value, index, values) {
+              if(parseInt(value) >= 1000){
+                return '$' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              } else {
+                return '$' + value;
+              }
+            }
+          }
+        }]
+    },
+    "legend": {
+    "display": false,
+    "fullWidth": true,
+    "position": "top"
+    },
+    onClick: (e) => {
+      comments_element.innerHTML = '';
+        const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
+        const dataX = Object.values(myChart.scales)[0].getValueForPixel(canvasPosition.x);
+        const click_date = dataX.toDate().toDateString()
+
+        var selectedComments=[]
+        {%for comment in comments%}
+          var comment_date = new Date('{{comment.date}}')
+          var comment_date = comment_date.toDateString()
+          if (comment_date === click_date) {
+            console.log(`{{comment.id}}`)
+            var element = document.createElement('div')
+            element.className = "individual_comment"
+            element.classList.add("card")
+            var comment_score = document.createElement('p')
+            comment_score.innerText = `Score: {{comment.score}}`
+            comment_score.style.fontWeight = 500
+            var comment_text = document.createElement('p')
+            {% autoescape on %}
+              comment_text.innerText = `{{comment.text}}`
+              console.log(`{{comment.text}}`)
+            {% endautoescape %}
+            element.appendChild(comment_score)
+            element.appendChild(comment_text)
+            comments_element.appendChild(element)
+            comments_date.innerText = comment_date
+          }
+        {%endfor%}
+    }
+  },
+});
+      console.log(`Hi my name is Bob\n\n\nhello he's cool`)
+        });
+{%for data in qs%}
+{%endfor%}
+
+</script>
+
+{%endblock scripts%}
+{%block content%}
+<h2 class="text-center">Total Cryptocurrency Market Cap</h2>
+<div class="row">
+  <div class="col-md-7">
+    <form action="" method="post">
+    <canvas id="cryptoCap" width="400" height="200"></canvas>
+    </form>
+  </div>
+  <div class="col-md-5 card comments_card">
+    <div class="card-body">
+            <h4 class="card-title" style="display:inline-block;">Comments</h4>
+      <p id="comments_date" style="display:inline-block;"></p>
+      <div id="comments">
+        <p>Click on the chart to view comments!</p>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<!-- <canvas id="a" style = "background-color: rgba(255, 0, 0, 0.123); position: absolute;top: 4em; left: 10em;aspect-ratio: auto 400 / 100;
+"width="400" height="100"></canvas> -->
+<!-- <div style="aspect-ratio: auto 1002 / 500; width: 30%; background-color: rgba(255, 0, 0, 0.123); position: absolute; top: 4em; left: 10em;"></div>   -->
+
+<canvas id="btcPrice" width="400" height="100"></canvas>  
+<canvas id="ethPrice" width="400" height="100"></canvas>  
+{%endblock content%}

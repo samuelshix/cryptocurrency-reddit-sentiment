@@ -1,0 +1,26 @@
+.navbar{
+    padding-left: 1em;
+    padding-right: 1em;
+    margin-bottom: 2em;
+}
+.row {
+    margin-top: 2em;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+.individual_comment {
+    font-size: .8em;
+    max-height: 100px;
+    overflow-y: auto;
+}
+.individual_comment.card {
+    padding: .3em;
+    margin-top: .5em;
+}
+.individual_comment p {
+    margin-bottom: .5rem;
+}
+.comments_card {
+    height: 50vh;
+    overflow-y: scroll;
+}

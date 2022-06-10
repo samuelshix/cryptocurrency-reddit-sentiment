@@ -71,34 +71,42 @@ var myChart = new Chart(ctx, {
     onClick: (e) => {
         comments_element.innerHTML = '';
         const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
-        const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x);
+        const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x)/1000;
+        console.log(dataX)
         var click_date = (new Date(dataX)).toDateString()
         var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
         $.post('',{
-          data: click_date,
+          data: dataX,
           csrfmiddlewaretoken: CSRFtoken
+        }).done(function() {
+          window.location.href='/'+dataX
         })
-        // test
-        console.log(click_date)
+        // console.log('{{date}}')
+        // var x = '{{date}}'
+        // if(x) {
+        //   console.log(x)
+        // }
+      
+        // console.log(click_date)
         // console.log({{submission}})
         var found_post = false
         var selectedComments=[]
         {%for submission in submissions%}
           var submission_date = new Date('{{submission.date}}')
           var submission_date = submission_date.toDateString()
-          if (submission_date === click_date) {
+          // if (submission_date === click_date) {
             submission_element.style.display = 'block';
             var submission_id = '{{submission.id}}'
             submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
             submission_element.children[0].innerText = 'View Thread: '+ submission_date
             found_post = true
-          }
+          // }
         {%endfor%}
         {%for comment in comments%}
           var comment_date = new Date('{{comment.date}}')
           var comment_date = comment_date.toDateString()
           if (comment_date === click_date) {
-            console.log(comment_date)
+            // console.log(comment_date)
             found_post = true
             var element = document.createElement('div')
             element.className = "individual_comment"
@@ -109,7 +117,6 @@ var myChart = new Chart(ctx, {
             var comment_text = document.createElement('p')
             {% autoescape on %}
               comment_text.innerText = `{{comment.text}}`
-              console.log(`{{comment.text}}`)
             {% endautoescape %}
             element.appendChild(comment_score)
             element.appendChild(comment_text)

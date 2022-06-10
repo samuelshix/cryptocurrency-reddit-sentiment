@@ -1,22 +1,42 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from .models import Submission, Comment, Topic, TradingDay
 import re
+from datetime import datetime
 # Create your views here.
-def index(request):
-    comments = list(Comment.objects.all())
-    submissions = list(Submission.objects.all())
-    # for i in comments:
-    #     i.text = re.sub('"',"“", i.text)
-    #     i.save()
-        # print(i.text)
-    # if request.method == "POST": 
-    #     comments = list()
+def date(request, timestamp):
+    print(timestamp)
+    date = datetime.utcfromtimestamp(int(float(timestamp)))
+    date = date.strftime('%Y-%m-%d')
+    submissions = list(Submission.objects.filter(date=date))
+    comments = list(Comment.objects.filter(submission=submissions[0]))
     return render(request, 'app/chart.html', {
         'qs': list(TradingDay.objects.all()[2000:]),
         'comments': comments,
         'submissions': submissions
-    })
+        # 'date': date
+    })    
+
+def index(request):
+    comments = list(Comment.objects.all())
+    submissions = list(Submission.objects.all())
+    # date = ''
+    if request.method == "POST": 
+        if request.POST.get('data'):
+            date = request.POST.get('data')
+            print(date)
+            return redirect('date', timestamp=date)
+            # return render(request, 'app/chart.html', {
+            #     'qs': list(TradingDay.objects.all()[2000:]),
+            #     'comments': comments,
+            #     'submissions': submissions,
+            #     'date': date,
+            # })
+    return render(request, 'app/chart.html', {
+        'qs': list(TradingDay.objects.all()[2000:]),
+        'comments': comments,
+        'submissions': submissions    
+        })
 
 def btc(request):
     comments = list(Comment.objects.filter(topic__type='btc'))

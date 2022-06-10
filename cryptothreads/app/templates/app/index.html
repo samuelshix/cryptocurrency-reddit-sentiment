@@ -16,8 +16,11 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
     <!-- ChartJS -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js" integrity="sha256-cHVO4dqZfamRhWD7s4iXyaXWVK10odD+qp4xidFzqTI=" crossorigin="anonymous"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js" integrity="sha256-qSIshlknROr4J8GMHRlW3fGKrPki733tLq+qeMCR05Q=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js" integrity="sha256-cHVO4dqZfamRhWD7s4iXyaXWVK10odD+qp4xidFzqTI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@^2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@^1"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js" integrity="sha256-qSIshlknROr4J8GMHRlW3fGKrPki733tLq+qeMCR05Q=" crossorigin="anonymous"></script> -->
     <!-- {% load static %}
     <script src="{% static 'chartjs-annotate-dist/chartjs-plugin-annotation.min.js' %}"></script> -->
 
@@ -45,6 +48,11 @@
     {%endblock scripts%}
     {%block content%} 
     {%endblock content%}
+    <div class="row">
+      <b>Methodology:</b>
+      <p>Daily discussion threads on subreddit r/Cryptocurrency were scraped for their top comments. Displaying these comments along with existing market conditions gives an insight on investor sentiment during bear/bull cycles.</p>
+      <p>Market data pulled from Coin Gecko API and Trading View, and Reddit comments received via Push Shift API.</p>
+    </div>
   </body>
 <script>
 </script>

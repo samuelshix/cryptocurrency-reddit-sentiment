@@ -24,3 +24,18 @@
     height: 50vh;
     overflow-y: scroll;
 }
+.comments_date {
+    background-color: black;
+    font-size: .8em;
+    border-radius: .5em;
+    color: white;
+    padding: 0 .2em;
+}
+#reddit_thread {
+    display: none;
+    width: 100%;
+}
+#reddit_thread a {
+    color: white !important;
+    text-decoration: none;
+}

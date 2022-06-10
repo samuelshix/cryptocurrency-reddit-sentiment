@@ -2,11 +2,11 @@ import praw
 from pmaw import PushshiftAPI
 import pandas as pd
 from datetime import datetime
-
+import datetime as dt
 from app.models import Submission, Comment, Topic
 from django.core.management.base import BaseCommand, CommandError
 import requests
-
+import re
 class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()
@@ -17,6 +17,32 @@ class Command(BaseCommand):
         client_secret="mMcsjS3apcp-wIxm2mcGNlEaAZsn_A",
         user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
         )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--text',
+            action='store_true',
+            help='Delete poll instead of closing it'
+        )
+
+    def update_text(self):
+        for comment in Comment.objects.all():
+            comment.text = re.sub("'","’",comment.text)
+            comment.text = re.sub("`","’",comment.text)
+            comment.text = re.sub('"',"“",comment.text)
+            comment.save()
+
+    def update(self):
+        today = dt.datetime.now()
+        d = dt.timedelta(days = 10)
+        a = today - d
+        start_epoch = int(a.timestamp())
+        return self.api.search_submissions(
+                            user = 'CryptoDaily-',
+                            title='Daily Discussion',
+                             subreddit = 'cryptocurrency',
+                             sort='desc',
+                             after= start_epoch)  
 
     def get_discussion_submissions(self):
         return self.api.search_submissions(user = 'AutoModerator',
@@ -74,25 +100,30 @@ class Command(BaseCommand):
         return data
 
     def append_data(self):
-        print(1)
         for i in self.get_comments():
-            if not Submission.objects.filter(date=i['post_date']):
-                submission = Submission(date=i['post_date'], id=i['id'])
-                submission.save()
-                print(2)
+            # if not Submission.objects.filter(date=i['post_date']):
+            submission = Submission.objects.filter(date=i['post_date'])
+            #     submission.save()
                 # self.stdout.write(self.style.SUCCESS('Submission saved'))
-                for j in i['comments']:
-                    if not Comment.objects.filter(date=j['date']):
-                        comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission)
-                        comment.save()
-                        if len(j['topic']) > 1:
-                            print('multitopic')
-                        comment.topic.add(*j['topic'])
+            for j in i['comments'][1:]:
+                print(j)
+                print(submission)
+                if not Comment.objects.filter(id=j['id']):
+                    print("1")
+                    comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission[0])
+                    comment.save()
+                    print(2)
+                    if len(j['topic']) > 1:
+                        print('multitopic')
+                    comment.topic.add(*j['topic'])
                     # self.stdout.write(self.style.SUCCESS('Comment saved'))
 
     def handle(self, *args, **options):
         try:
-            self.append_data()
+            if options['text']:
+                self.update_text()
+            else:
+                self.append_data()
             # self.stdout.write(self.style.SUCCESS('Success!'))
         except:
             raise CommandError('An error has occurred.')

@@ -6,33 +6,56 @@
     $(document).ready(function(){
         var ctx = document.getElementById("btcPrice").getContext("2d");
         var comments_element = document.getElementById("comments");
-        var comments_date = document.getElementById("comments_date");
+        var submission_element = document.getElementById("reddit_thread")
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
+    // labels: ["2015-03-15T13:03:00Z", "2015-03-25T13:02:00Z", "2015-04-25T14:12:00Z"],
     datasets: [{
       borderColor: 'rgba(242, 167, 54, 1)',
       backgroundColor: 'rgba(242, 167, 54, .3)',
+      label: 'Bitcoin Price',
       pointRadius: 0,
       data: [
             {%for data in qs%}
             {x: '{{data.date}}', y:{{data.bitcoin_price}}},
             {%endfor%}
         ],
-      borderWidth: 1
+      borderWidth: 2
     }]
   },
   options: {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+              let label = context.dataset.label || '';
+
+              if (label) {
+                  label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+              }
+              return label;
+          }
+        }        
+      },
+      "legend": {
+        "display": false,
+      },
+    },
     elements: {
         line: {
             tension: 0.1
         }
     },
     scales: {
-        xAxes: [{
+        x: {
             type: 'time',
-        }],
-        yAxes: [{
+
+        },
+        y: {
           ticks: {
             beginAtZero: false,
             callback: function(value, index, values) {
@@ -43,23 +66,38 @@ var myChart = new Chart(ctx, {
               }
             }
           }
-        }]
-    },
-    "legend": {
-    "display": false,
+        }
     },
     onClick: (e) => {
-      comments_element.innerHTML = '';
+        comments_element.innerHTML = '';
         const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
-        const dataX = Object.values(myChart.scales)[0].getValueForPixel(canvasPosition.x);
-        const click_date = dataX.toDate().toDateString()
-
+        const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x);
+        var click_date = (new Date(dataX)).toDateString()
+        // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+        // $.post('',{
+        //   data: click_date,
+        //   csrfmiddlewaretoken: CSRFtoken
+        // })
+        console.log(click_date)
+        // console.log({{submission}})
+        var found_post = false
         var selectedComments=[]
+        {%for submission in submissions%}
+          var submission_date = new Date('{{submission.date}}')
+          var submission_date = submission_date.toDateString()
+          if (submission_date === click_date) {
+            submission_element.style.display = 'block';
+            var submission_id = '{{submission.id}}'
+            submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
+            submission_element.children[0].innerText = 'View Thread: '+ submission_date
+            found_post = true
+          }
+        {%endfor%}
         {%for comment in comments%}
           var comment_date = new Date('{{comment.date}}')
           var comment_date = comment_date.toDateString()
           if (comment_date === click_date) {
-            console.log(`{{comment.id}}`)
+            console.log(comment_date)
             var element = document.createElement('div')
             element.className = "individual_comment"
             element.classList.add("card")
@@ -68,41 +106,53 @@ var myChart = new Chart(ctx, {
             comment_score.style.fontWeight = 500
             var comment_text = document.createElement('p')
             {% autoescape on %}
-              console.log(`{{comment.text}}`)
               comment_text.innerText = `{{comment.text}}`
+              console.log(`{{comment.text}}`)
             {% endautoescape %}
             element.appendChild(comment_score)
             element.appendChild(comment_text)
             comments_element.appendChild(element)
-            comments_date.innerText = comment_date
           }
         {%endfor%}
+        if(!found_post) {
+          comments_element.innerHTML = 'Error: missing thread for selected date';
+          submission_element.style.display = 'None'
+        }
     }
-  }
+  },
 });
         });
-{%for data in qs%}
-{%endfor%}
+</script>
+<script>
 
 </script>
-
 {%endblock scripts%}
 {%block content%}
 <h2 class="text-center">Bitcoin Price</h2>
 <div class="row">
   <div class="col-md-7">
     <form action="" method="post">
+      {% csrf_token %}
+      <!-- <button> -->
     <canvas id="btcPrice" width="400" height="200"></canvas>
+      <!-- </button> -->
     </form>
   </div>
   <div class="col-md-5 card comments_card">
     <div class="card-body">
-            <h4 class="card-title" style="display:inline-block;">Comments</h4>
-      <p id="comments_date" style="display:inline-block;"></p>
+      <h4 class="card-title" style="display:inline-block;">Comments</h4>
+      <button class="btn btn-primary" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
       <div id="comments">
         <p>Click on the chart to view comments!</p>
       </div>
     </div>
   </div>
 </div> 
+
+<!-- <canvas id="a" style = "background-color: rgba(255, 0, 0, 0.123); position: absolute;top: 4em; left: 10em;aspect-ratio: auto 400 / 100;
+"width="400" height="100"></canvas> -->
+<!-- <div style="aspect-ratio: auto 1002 / 500; width: 30%; background-color: rgba(255, 0, 0, 0.123); position: absolute; top: 4em; left: 10em;"></div>   -->
+
+<canvas id="btcPrice" width="400" height="100"></canvas>  
+<canvas id="ethPrice" width="400" height="100"></canvas>  
 {%endblock content%}

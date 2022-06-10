@@ -5,6 +5,7 @@ import re
 # Create your views here.
 def index(request):
     comments = list(Comment.objects.all())
+    submissions = list(Submission.objects.all())
     # for i in comments:
     #     i.text = re.sub('"',"“", i.text)
     #     i.save()
@@ -12,23 +13,33 @@ def index(request):
     # if request.method == "POST": 
     #     comments = list()
     return render(request, 'app/chart.html', {
-        'qs': list(TradingDay.objects.all()[2479:]),
-        'comments': comments
+        'qs': list(TradingDay.objects.all()[2000:]),
+        'comments': comments,
+        'submissions': submissions
     })
 
 def btc(request):
     comments = list(Comment.objects.filter(topic__type='btc'))
+    submissions = list(Submission.objects.all())
+
     return render(request, 'app/btc-chart.html', {
         'qs': list(TradingDay.objects.all()[800:]),
-        'comments': comments
+        'comments': comments,
+        'submissions': submissions
     })   
 
 def eth(request):
     comments = list(Comment.objects.filter(topic__type='eth'))
+    submissions = list(Submission.objects.all())
+
     return render(request, 'app/eth-chart.html', {
         'qs': list(TradingDay.objects.all()[800:]),
-        'comments': comments
+        'comments': comments,
+        'submissions': submissions
     })     
+
+def info(request):
+    return render(request,'app/info.html')
 # def eth(request):
 
 # class ChartView(TemplateView):

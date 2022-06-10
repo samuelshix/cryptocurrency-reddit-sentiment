@@ -73,11 +73,11 @@ var myChart = new Chart(ctx, {
         const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
         const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x);
         var click_date = (new Date(dataX)).toDateString()
-        // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-        // $.post('',{
-        //   data: click_date,
-        //   csrfmiddlewaretoken: CSRFtoken
-        // })
+        var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+        $.post('',{
+          data: click_date,
+          csrfmiddlewaretoken: CSRFtoken
+        })
         console.log(click_date)
         // console.log({{submission}})
         var found_post = false

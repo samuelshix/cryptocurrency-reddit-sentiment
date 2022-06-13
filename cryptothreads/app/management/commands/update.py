@@ -22,7 +22,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--text',
             action='store_true',
-            help='Delete poll instead of closing it'
+            help='Update text'
         )
 
     def update_text(self):
@@ -37,10 +37,12 @@ class Command(BaseCommand):
         d = dt.timedelta(days = 10)
         a = today - d
         start_epoch = int(a.timestamp())
+        print(start_epoch)
         return self.api.search_submissions(
                             user = 'CryptoDaily-',
                             title='Daily Discussion',
                              subreddit = 'cryptocurrency',
+                            num_comments = '>300',
                              sort='desc',
                              after= start_epoch)  
 
@@ -48,12 +50,12 @@ class Command(BaseCommand):
         return self.api.search_submissions(user = 'AutoModerator',
                                     title = 'Daily Discussion - ',
                                     subreddit = 'cryptocurrency',
-                                    num_comments = '>300',
+                                    # num_comments = '>300',
                                     limit = 2000,
                                     sort = 'desc')
 
     def process_df(self):
-        df = pd.DataFrame(self.get_discussion_submissions())
+        df = pd.DataFrame(self.update())
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
         # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
@@ -101,18 +103,22 @@ class Command(BaseCommand):
 
     def append_data(self):
         for i in self.get_comments():
-            # if not Submission.objects.filter(date=i['post_date']):
-            submission = Submission.objects.filter(date=i['post_date'])
-            #     submission.save()
+            if not Submission.objects.filter(date=i['post_date']):
+            # submission = Submission.objects.filter(date=i['post_date'])
+                submission = Submission(id=i['id'], date=i['post_date'])
+                submission.save()
                 # self.stdout.write(self.style.SUCCESS('Submission saved'))
-            for j in i['comments'][1:]:
-                print(j)
-                print(submission)
-                if not Comment.objects.filter(id=j['id']):
-                    print("1")
-                    comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission[0])
-                    comment.save()
+            for j in i['comments']:
+                # print(j)
+                # print(submission)
+                # if not Comment.objects.filter(id=j['id']):
                     print(2)
+                    comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission[0])
+                    comment.text = re.sub("'","’",comment.text)
+                    comment.text = re.sub("`","’",comment.text)
+                    comment.text = re.sub('"',"“",comment.text)
+                    comment.save()
+                    print(3)
                     if len(j['topic']) > 1:
                         print('multitopic')
                     comment.topic.add(*j['topic'])

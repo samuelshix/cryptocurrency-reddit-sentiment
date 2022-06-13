@@ -6,20 +6,27 @@
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'index' %}">Total Cap</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'btc' %}">Bitcoin</a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'eth' %}">Ethereum</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Metrics
+            Timeframe
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'btc' %}">Bitcoin</a>
-            <a class="dropdown-item" href="{% url 'eth' %}">Ethereum</a>
+            <a class="dropdown-item" href="{% url 'btc' %}">Past Year</a>
+            <a class="dropdown-item" href="{% url 'eth' %}">Past Month</a>
+            <a class="dropdown-item" href="{% url 'eth' %}">Past Week</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="{% url 'index' %}">Total Cap</a>
+            <a class="dropdown-item" href="{% url 'index' %}">All</a>
           </div>
         </li>
-        <!-- <li class="nav-item active">
-          <a class="nav-link" href="{% url 'info' %}">Info<span class="sr-only">(current)</span></a>
-        </li> -->
       </ul>
     </div>
   </nav>

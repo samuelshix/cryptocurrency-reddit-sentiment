@@ -40,6 +40,9 @@ def eth(request):
 
 def info(request):
     return render(request,'app/info.html')
+
+# def daily(request):
+
 # def eth(request):
 
 # class ChartView(TemplateView):

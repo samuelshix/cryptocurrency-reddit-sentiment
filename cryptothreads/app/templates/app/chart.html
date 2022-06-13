@@ -7,7 +7,10 @@
         var ctx = document.getElementById("cryptoCap").getContext("2d");
         var comments_element = document.getElementById("comments");
         var submission_element = document.getElementById("reddit_thread")
-        
+        var top_comment = document.getElementById("top-comment")
+        var top_comment_text = document.getElementById("top-comment-text")
+        var top_comment_score = document.getElementById("top-comment-score")
+        var top_comment_date = document.getElementById("top-comment-date")
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -15,6 +18,7 @@ var myChart = new Chart(ctx, {
     datasets: [{
       borderColor: 'rgba(50, 50, 50, .8)',
       backgroundColor: 'rgba(50, 50, 50, .3)',
+      fill: true,
       pointRadius: 1,
       data: [
             {%for data in qs%}
@@ -78,8 +82,9 @@ var myChart = new Chart(ctx, {
         //   data: click_date,
         //   csrfmiddlewaretoken: CSRFtoken
         // })
+
+        top_comment.style.display = 'block'
         console.log(click_date)
-        // console.log({{submission}})
         var found_post = false
         var selectedComments=[]
         {%for submission in submissions%}
@@ -93,12 +98,17 @@ var myChart = new Chart(ctx, {
             found_post = true
           }
         {%endfor%}
+        var counter = 0
         {%for comment in comments%}
           var comment_date = new Date('{{comment.date}}')
           var comment_date = comment_date.toDateString()
           if (comment_date === click_date) {
-            console.log(comment_date)
-            found_post = true
+            counter++;
+            if (counter === 1) {
+              top_comment_text.innerText = `{{comment.text}}`
+              top_comment_score.innerText = `{{comment.score}}`
+              top_comment_date.innerText = comment_date
+            }
             var element = document.createElement('div')
             element.className = "individual_comment"
             element.classList.add("card")
@@ -108,7 +118,6 @@ var myChart = new Chart(ctx, {
             var comment_text = document.createElement('p')
             {% autoescape on %}
               comment_text.innerText = `{{comment.text}}`
-              console.log(`{{comment.text}}`)
             {% endautoescape %}
             element.appendChild(comment_score)
             element.appendChild(comment_text)
@@ -117,6 +126,7 @@ var myChart = new Chart(ctx, {
         {%endfor%}
         if(!found_post) {
           submission_element.style.display = 'None'
+          top_comment.style.display = 'None'
           comments_element.innerHTML = 'Error: missing thread for selected date';
         }
     }
@@ -147,6 +157,16 @@ var myChart = new Chart(ctx, {
     </div>
   </div>
 </div> 
+<div class="row" id="top-comment">
+  <div class="card">
+    <h3 class="card-title">Top Comment</h3>
+    <p>Score: <b id="top-comment-score"></b> | Date: <b id="top-comment-date"></b></p>
+
+    <div class="card">
+      <h1 id="top-comment-text"></h1>
+    </div>
+  </div>
+</div>
 
 <!-- <canvas id="a" style = "background-color: rgba(255, 0, 0, 0.123); position: absolute;top: 4em; left: 10em;aspect-ratio: auto 400 / 100;
 "width="400" height="100"></canvas> -->

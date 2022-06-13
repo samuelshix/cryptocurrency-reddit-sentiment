@@ -4,24 +4,28 @@
 <script>
     // jquery function
     $(document).ready(function(){
-        var ctx = document.getElementById("btcPrice").getContext("2d");
+        var ctx = document.getElementById("cryptoCap").getContext("2d");
         var comments_element = document.getElementById("comments");
         var submission_element = document.getElementById("reddit_thread")
+        var top_comment = document.getElementById("top-comment")
+        var top_comment_text = document.getElementById("top-comment-text")
+        var top_comment_score = document.getElementById("top-comment-score")
+        var top_comment_date = document.getElementById("top-comment-date")
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
     // labels: ["2015-03-15T13:03:00Z", "2015-03-25T13:02:00Z", "2015-04-25T14:12:00Z"],
     datasets: [{
-      borderColor: 'rgba(242, 167, 54, 1)',
+      borderColor: 'rgba(242, 167, 54, .7)',
       backgroundColor: 'rgba(242, 167, 54, .3)',
-      label: 'Bitcoin Price',
-      pointRadius: 0,
+      fill: true,
+      pointRadius: 1,
       data: [
             {%for data in qs%}
-            {x: '{{data.date}}', y:{{data.bitcoin_price}}},
+            {x: '{{data.date}}', y:{{data.crypto_cap}}},
             {%endfor%}
         ],
-      borderWidth: 2
+      borderWidth: 1.5
     }]
   },
   options: {
@@ -78,8 +82,9 @@ var myChart = new Chart(ctx, {
         //   data: click_date,
         //   csrfmiddlewaretoken: CSRFtoken
         // })
+
+        top_comment.style.display = 'block'
         console.log(click_date)
-        // console.log({{submission}})
         var found_post = false
         var selectedComments=[]
         {%for submission in submissions%}
@@ -93,11 +98,17 @@ var myChart = new Chart(ctx, {
             found_post = true
           }
         {%endfor%}
+        var counter = 0
         {%for comment in comments%}
           var comment_date = new Date('{{comment.date}}')
           var comment_date = comment_date.toDateString()
           if (comment_date === click_date) {
-            console.log(comment_date)
+            counter++;
+            if (counter === 1) {
+              top_comment_text.innerText = `{{comment.text}}`
+              top_comment_score.innerText = `{{comment.score}}`
+              top_comment_date.innerText = comment_date
+            }
             var element = document.createElement('div')
             element.className = "individual_comment"
             element.classList.add("card")
@@ -107,7 +118,6 @@ var myChart = new Chart(ctx, {
             var comment_text = document.createElement('p')
             {% autoescape on %}
               comment_text.innerText = `{{comment.text}}`
-              console.log(`{{comment.text}}`)
             {% endautoescape %}
             element.appendChild(comment_score)
             element.appendChild(comment_text)
@@ -115,8 +125,9 @@ var myChart = new Chart(ctx, {
           }
         {%endfor%}
         if(!found_post) {
-          comments_element.innerHTML = 'Error: missing thread for selected date';
           submission_element.style.display = 'None'
+          top_comment.style.display = 'None'
+          comments_element.innerHTML = 'Error: missing thread for selected date';
         }
     }
   },
@@ -133,26 +144,32 @@ var myChart = new Chart(ctx, {
   <div class="col-md-7">
     <form action="" method="post">
       {% csrf_token %}
-      <!-- <button> -->
-    <canvas id="btcPrice" width="400" height="200"></canvas>
-      <!-- </button> -->
+    <canvas id="cryptoCap" width="400" height="250"></canvas>
     </form>
   </div>
   <div class="col-md-5 card comments_card">
     <div class="card-body">
       <h4 class="card-title" style="display:inline-block;">Comments</h4>
-      <button class="btn btn-primary" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
+      <button class="btn btn-special" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
       <div id="comments">
         <p>Click on the chart to view comments!</p>
       </div>
     </div>
   </div>
 </div> 
+<div class="row" id="top-comment">
+  <div class="card">
+    <h3 class="card-title">Top Comment</h3>
+    <p>Score: <b id="top-comment-score"></b> | Date: <b id="top-comment-date"></b></p>
+
+    <div class="card">
+      <h1 id="top-comment-text"></h1>
+    </div>
+  </div>
+</div>
 
 <!-- <canvas id="a" style = "background-color: rgba(255, 0, 0, 0.123); position: absolute;top: 4em; left: 10em;aspect-ratio: auto 400 / 100;
 "width="400" height="100"></canvas> -->
 <!-- <div style="aspect-ratio: auto 1002 / 500; width: 30%; background-color: rgba(255, 0, 0, 0.123); position: absolute; top: 4em; left: 10em;"></div>   -->
 
-<canvas id="btcPrice" width="400" height="100"></canvas>  
-<canvas id="ethPrice" width="400" height="100"></canvas>  
 {%endblock content%}

@@ -5,21 +5,28 @@ import re
 from datetime import datetime
 # Create your views here.
 def date(request, timestamp):
-    print(timestamp)
     date = datetime.utcfromtimestamp(int(float(timestamp)))
     date = date.strftime('%Y-%m-%d')
     submissions = list(Submission.objects.filter(date=date))
-    comments = list(Comment.objects.filter(submission=submissions[0]))
+    print(submissions)
+    found_post = False
+    if submissions:
+        found_post = True
+        comments = list(Comment.objects.filter(submission=submissions[0]))
+    else:
+        comments = ''
+    print(found_post)
     return render(request, 'app/chart.html', {
         'qs': list(TradingDay.objects.all()[2000:]),
         'comments': comments,
-        'submissions': submissions
+        'submissions': submissions,
+        'timestamp': timestamp,
+        'found_post': found_post
         # 'date': date
     })    
 
 def index(request):
-    comments = list(Comment.objects.all())
-    submissions = list(Submission.objects.all())
+    comments, submissions = ''
     # date = ''
     if request.method == "POST": 
         if request.POST.get('data'):

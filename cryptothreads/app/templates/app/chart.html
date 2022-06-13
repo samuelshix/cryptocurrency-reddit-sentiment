@@ -2,12 +2,55 @@
 
 {%block scripts%} 
 <script>
+$(document).ready(function(){
+{%if timestamp%}
+  var click_date = (new Date({{timestamp}})).toDateString()
+  var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+  var comments_element = document.getElementById("comments");
+  var submission_element = document.getElementById("reddit_thread")
+  var selectedComments=[]
+  {%for submission in submissions%}
+    var submission_date = new Date('{{submission.date}}')
+    var submission_date = submission_date.toDateString()
+    // if (submission_date === click_date) {
+      submission_element.style.display = 'block';
+      var submission_id = '{{submission.id}}'
+      submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
+      submission_element.children[0].innerText = 'View Thread: '+ submission_date
+    // }
+  {%endfor%}
+  {%for comment in comments%}
+    var comment_date = new Date('{{comment.date}}')
+    var comment_date = comment_date.toDateString()
+    // if (comment_date === click_date) {
+      // console.log(comment_date)
+      var element = document.createElement('div')
+      element.className = "individual_comment"
+      element.classList.add("card")
+      var comment_score = document.createElement('p')
+      comment_score.innerText = `Score: {{comment.score}}`
+      comment_score.style.fontWeight = 500
+      var comment_text = document.createElement('p')
+      {% autoescape on %}
+        comment_text.innerText = `{{comment.text}}`
+      {% endautoescape %}
+      element.appendChild(comment_score)
+      element.appendChild(comment_text)
+      comments_element.appendChild(element)
+  {%endfor%}
+  {%if not found_post%}
+    submission_element.style.display = 'None'
+    comments_element.innerHTML = 'Error: missing thread for selected date';
+  {%endif%}
+{%endif%}
+});
+</script>
+<script>
     // jquery function
     $(document).ready(function(){
         var ctx = document.getElementById("cryptoCap").getContext("2d");
         var comments_element = document.getElementById("comments");
         var submission_element = document.getElementById("reddit_thread")
-        
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -79,7 +122,7 @@ var myChart = new Chart(ctx, {
           data: dataX,
           csrfmiddlewaretoken: CSRFtoken
         }).done(function() {
-          window.location.href='/'+dataX
+          window.location.href='/'+parseInt(dataX)
         })
         // console.log('{{date}}')
         // var x = '{{date}}'
@@ -89,44 +132,6 @@ var myChart = new Chart(ctx, {
       
         // console.log(click_date)
         // console.log({{submission}})
-        var found_post = false
-        var selectedComments=[]
-        {%for submission in submissions%}
-          var submission_date = new Date('{{submission.date}}')
-          var submission_date = submission_date.toDateString()
-          // if (submission_date === click_date) {
-            submission_element.style.display = 'block';
-            var submission_id = '{{submission.id}}'
-            submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
-            submission_element.children[0].innerText = 'View Thread: '+ submission_date
-            found_post = true
-          // }
-        {%endfor%}
-        {%for comment in comments%}
-          var comment_date = new Date('{{comment.date}}')
-          var comment_date = comment_date.toDateString()
-          if (comment_date === click_date) {
-            // console.log(comment_date)
-            found_post = true
-            var element = document.createElement('div')
-            element.className = "individual_comment"
-            element.classList.add("card")
-            var comment_score = document.createElement('p')
-            comment_score.innerText = `Score: {{comment.score}}`
-            comment_score.style.fontWeight = 500
-            var comment_text = document.createElement('p')
-            {% autoescape on %}
-              comment_text.innerText = `{{comment.text}}`
-            {% endautoescape %}
-            element.appendChild(comment_score)
-            element.appendChild(comment_text)
-            comments_element.appendChild(element)
-          }
-        {%endfor%}
-        if(!found_post) {
-          submission_element.style.display = 'None'
-          comments_element.innerHTML = 'Error: missing thread for selected date';
-        }
     }
   },
 });

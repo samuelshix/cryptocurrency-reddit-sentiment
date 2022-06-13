@@ -42,7 +42,7 @@ class Command(BaseCommand):
                             user = 'CryptoDaily-',
                             title='Daily Discussion',
                              subreddit = 'cryptocurrency',
-                            num_comments = '>300',
+                            # num_comments = '>300',
                              sort='desc',
                              after= start_epoch)  
 
@@ -53,12 +53,13 @@ class Command(BaseCommand):
                                     # num_comments = '>300',
                                     limit = 2000,
                                     sort = 'desc')
-
+  
     def process_df(self):
         df = pd.DataFrame(self.update())
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
         # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
+        print(crypto_threads)
         return crypto_threads
 
     # to get top 10 for each day on multi-day post: sort by popularity, 
@@ -108,21 +109,21 @@ class Command(BaseCommand):
                 submission = Submission(id=i['id'], date=i['post_date'])
                 submission.save()
                 # self.stdout.write(self.style.SUCCESS('Submission saved'))
-            for j in i['comments']:
-                # print(j)
-                # print(submission)
-                # if not Comment.objects.filter(id=j['id']):
-                    print(2)
-                    comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission[0])
-                    comment.text = re.sub("'","’",comment.text)
-                    comment.text = re.sub("`","’",comment.text)
-                    comment.text = re.sub('"',"“",comment.text)
-                    comment.save()
-                    print(3)
-                    if len(j['topic']) > 1:
-                        print('multitopic')
-                    comment.topic.add(*j['topic'])
-                    # self.stdout.write(self.style.SUCCESS('Comment saved'))
+                for j in i['comments']:
+                    # print(j)
+                    # print(submission)
+                    # if not Comment.objects.filter(id=j['id']):
+                        print(2)
+                        comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission)
+                        comment.text = re.sub("'","’",comment.text)
+                        comment.text = re.sub("`","’",comment.text)
+                        comment.text = re.sub('"',"“",comment.text)
+                        comment.save()
+                        print(3)
+                        if len(j['topic']) > 1:
+                            print('multitopic')
+                        comment.topic.add(*j['topic'])
+                        # self.stdout.write(self.style.SUCCESS('Comment saved'))
 
     def handle(self, *args, **options):
         try:

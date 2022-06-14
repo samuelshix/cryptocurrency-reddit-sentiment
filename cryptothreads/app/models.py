@@ -4,6 +4,7 @@ from django.db import models
 class Submission(models.Model):
     id = models.TextField(max_length=20, primary_key=True)
     date = models.DateField()
+    subreddit = models.TextField(max_length=20, default="cryptocurrency")
 
 class Topic(models.Model):
     type = models.CharField(max_length = 3)

@@ -27,10 +27,13 @@
     {%endfor%}
     var first_comment = true
     {%for comment in comments%}
+      {% autoescape off %}
+      comment_true_text = `{{comment.text}}`
+      {% endautoescape %}
       var comment_date = new Date('{{comment.date}}')
       var comment_date = comment_date.toDateString()
       if (first_comment) {
-        top_comment_text.innerText = `{{comment.text}}`
+        top_comment_text.innerText = comment_true_text
         top_comment_score.innerText = `{{comment.score}}`
         top_comment_date.innerText = comment_date
       }
@@ -44,9 +47,7 @@
         comment_score.innerText = `Score: {{comment.score}}`
         comment_score.style.fontWeight = 500
         var comment_text = document.createElement('p')
-        {% autoescape on %}
-          comment_text.innerText = `{{comment.text}}`
-        {% endautoescape %}
+        comment_text.innerText = comment_true_text
         element.appendChild(comment_score)
         element.appendChild(comment_text)
         comments_element.appendChild(element)

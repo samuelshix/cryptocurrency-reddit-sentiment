@@ -7,6 +7,7 @@ from app.models import Submission, Comment, Topic
 from django.core.management.base import BaseCommand, CommandError
 import requests
 import re
+
 class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()
@@ -54,6 +55,7 @@ class Command(BaseCommand):
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
         # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
+        print('Using df:')
         print(crypto_threads)
         return crypto_threads
 
@@ -104,6 +106,8 @@ class Command(BaseCommand):
                 'post_date': datetime.utcfromtimestamp(i[1].created_utc).strftime('%Y-%m-%d'),
                 'comments': comment_dict_list
             })
+            # print(data)
+        print('data dict:\n\n\n')
         print(data)
         return data
 

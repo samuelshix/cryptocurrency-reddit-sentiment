@@ -75,14 +75,13 @@ var myChart = new Chart(ctx, {
   data: {
     // labels: ["2015-03-15T13:03:00Z", "2015-03-25T13:02:00Z", "2015-04-25T14:12:00Z"],
     datasets: [{
-      borderColor: 'rgba(50, 50, 50, .8)',
-      backgroundColor: 'rgba(50, 50, 50, .3)',
+        {%block colors%}
+        {%endblock%}
       fill: true,
       pointRadius: 1,
       data: [
-            {%for data in qs%}
-            {x: '{{data.date}}', y:{{data.crypto_cap}}},
-            {%endfor%}
+            {%block price_data%}
+            {%endblock%}
         ],
       borderWidth: 1.5
     }]
@@ -141,7 +140,8 @@ var myChart = new Chart(ctx, {
           data: dataX,
           csrfmiddlewaretoken: CSRFtoken
         }).done(function() {
-          window.location.href='/'+parseInt(dataX)
+            {%block window_location%}
+            {%endblock%}
         })
     }
   },
@@ -153,7 +153,8 @@ var myChart = new Chart(ctx, {
 </script>
 {%endblock scripts%}
 {%block content%}
-<h2 class="text-center">Total Cryptocurrency Market Cap</h2>
+{%block title%}
+{%endblock%}
 <div class="row">
   <div class="col-md-7">
     <form action="" method="post">
@@ -181,9 +182,4 @@ var myChart = new Chart(ctx, {
     </div>
   </div>
 </div>
-
-<!-- <canvas id="a" style = "background-color: rgba(255, 0, 0, 0.123); position: absolute;top: 4em; left: 10em;aspect-ratio: auto 400 / 100;
-"width="400" height="100"></canvas> -->
-<!-- <div style="aspect-ratio: auto 1002 / 500; width: 30%; background-color: rgba(255, 0, 0, 0.123); position: absolute; top: 4em; left: 10em;"></div>   -->
-
 {%endblock content%}

@@ -1,0 +1,20 @@
+{% extends 'app/chart.html'%}
+
+{% block title %}
+<h2 class="text-center">Total Cryptocurrency Market Cap</h2>
+{% endblock %}
+
+{%block colors%}
+borderColor: 'rgba(50, 50, 50, .8)',
+backgroundColor: 'rgba(50, 50, 50, .3)',
+{%endblock%}
+
+{%block price_data%}
+  {%for data in qs%}
+    {x: '{{data.date}}', y:{{data.crypto_cap}}},
+  {%endfor%} 
+{%endblock%}
+
+{%block window_location%}
+  window.location.href='/total/'+parseInt(dataX)
+{%endblock%}

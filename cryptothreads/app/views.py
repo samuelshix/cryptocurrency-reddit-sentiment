@@ -5,24 +5,19 @@ import re
 from datetime import datetime
 
 # Create your views here.
-def date(request, timestamp, chart_type):
+def date(request, timestamp, asset):
     date = datetime.utcfromtimestamp(int(float(timestamp)))
     date = date.strftime('%Y-%m-%d')
     submissions = list(Submission.objects.filter(date=date))
-    if chart_type == 'total':
-        url = 'app/chart.html'
-    elif chart_type == 'btc':
-        url = 'app/btc-chart.html'
-    elif chart_type == 'eth':
-        url = 'app/eth-chart.html'
+    url = 'app/{0}-chart.html'.format(asset)
     found_post = False
     if submissions:
         found_post = True
-        if chart_type == 'total':
+        if asset == 'total':
             comments = list(Comment.objects.filter(submission=submissions[0]))
-        elif chart_type == 'btc':
+        elif asset == 'btc':
             comments = list(Comment.objects.filter(topic__type='btc',submission=submissions[0]))
-        elif chart_type == 'eth':
+        elif asset == 'eth':
             comments = list(Comment.objects.filter(topic__type='eth',submission=submissions[0]))
     else:
         comments = ''
@@ -36,23 +31,16 @@ def date(request, timestamp, chart_type):
         # 'date': date
     })    
 
-def datetotal(request, timestamp):
-    return date(request, timestamp, 'total')   
-
-def datebtc(request, timestamp):
-    return date(request, timestamp, 'btc')   
-
-def dateeth(request, timestamp):
-    return date(request, timestamp, 'eth')   
-   
-def index(request):
+def index(request,asset):
     comments, submissions = '',''
-    if request.method == "POST": 
-        if request.POST.get('data'):
-            date = request.POST.get('data')
-            print(date)
-            return redirect('date', timestamp=date)
-    return render(request, 'app/chart.html', {
+    return render(request, 'app/{0}-chart.html'.format(asset), {
+        'qs': list(TradingDay.objects.all()[800:]),
+        'comments': comments,
+        'submissions': submissions
+    })
+def total(request):
+    comments, submissions = '',''
+    return render(request, 'app/total-chart.html', {
         'qs': list(TradingDay.objects.all()[800:]),
         'comments': comments,
         'submissions': submissions
@@ -74,8 +62,8 @@ def eth(request):
         'submissions': submissions
     })     
 
-def info(request):
-    return render(request,'app/info.html')
+def test(request):
+    return render(request, 'app/test.html')
 
 # def daily(request):
 

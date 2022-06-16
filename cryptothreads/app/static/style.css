@@ -27,7 +27,7 @@
     margin-bottom: .5rem;
 }
 .comments_card {
-    height: 50vh;
+    height: 60vh;
     overflow-y: scroll;
     padding: 0;
 }
@@ -69,4 +69,7 @@
     max-height: 20em;
     overflow-y: auto;
     font-weight: 200;
+}
+#toggleTimeframe .btn-dark {
+    width: 24%;
 }

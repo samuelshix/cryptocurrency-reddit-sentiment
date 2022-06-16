@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from .models import Submission, Comment, Topic, TradingDay
-import re
 from datetime import datetime
 
 # Create your views here.
 def date(request, timestamp, asset):
     date = datetime.utcfromtimestamp(int(float(timestamp)))
     date = date.strftime('%Y-%m-%d')
-    submissions = list(Submission.objects.filter(date=date))
+    submissions = list(Submission.objects.filter(date=date, subreddit='cryptocurrency'))
+    # submissions.append(Submission.objects.filter(date=date, subreddit='ethtrader'))
+    # submissions.append(Submission.objects.filter(date=date, subreddit='bitcoin'))
     url = 'app/{0}-chart.html'.format(asset)
     found_post = False
     if submissions:
@@ -38,29 +39,14 @@ def index(request,asset):
         'comments': comments,
         'submissions': submissions
     })
-def total(request):
+
+def base(request):
     comments, submissions = '',''
     return render(request, 'app/total-chart.html', {
         'qs': list(TradingDay.objects.all()[800:]),
         'comments': comments,
         'submissions': submissions
     })
-
-def btc(request):
-    comments, submissions = '',''
-    return render(request, 'app/btc-chart.html', {
-        'qs': list(TradingDay.objects.all()[800:]),
-        'comments': comments,
-        'submissions': submissions
-    })   
-
-def eth(request):
-    comments, submissions = '',''
-    return render(request, 'app/eth-chart.html', {
-        'qs': list(TradingDay.objects.all()[800:]),
-        'comments': comments,
-        'submissions': submissions
-    })     
 
 def test(request):
     return render(request, 'app/test.html')

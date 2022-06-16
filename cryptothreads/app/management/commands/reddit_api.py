@@ -2,7 +2,7 @@ import praw
 from pmaw import PushshiftAPI
 import pandas as pd
 from datetime import datetime
-
+import datetime as dt
 from app.models import Submission, Comment, Topic
 from django.core.management.base import BaseCommand, CommandError
 import requests
@@ -34,6 +34,10 @@ class Command(BaseCommand):
         #                             limit = 2000)
 
     def get_discussion_submissions(self, subreddit):
+        today = dt.datetime.now()
+        d = dt.timedelta(days = 126)
+        a = today - d
+        start_epoch = int(a.timestamp())
         print('Using {0} subreddit...'.format(subreddit))
         if subreddit == 'cryptocurrency':
             return self.api.search_submissions(user = 'AutoModerator',
@@ -41,7 +45,7 @@ class Command(BaseCommand):
                             subreddit = 'cryptocurrency',
                             sort = 'desc',
                             num_comments = '>50',
-                            limit = 2000)
+                            )
         elif subreddit == 'ethtrader':
             return self.api.search_submissions(
                                         title = 'Daily Discussion',
@@ -49,7 +53,14 @@ class Command(BaseCommand):
                                         sort = 'desc',
                                         num_comments = '>100',
                                         )
-
+        elif subreddit == 'bitcoin':
+            return self.api.search_submissions(
+                                        title = 'Daily Discussion, ',
+                                        subreddit = 'bitcoin',
+                                        sort = 'desc',
+                                        num_comments = '>100',
+                                        after= start_epoch
+                                        )
     def process_df(self, subreddit):
         df = pd.DataFrame(self.get_discussion_submissions(subreddit))
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
@@ -72,9 +83,10 @@ class Command(BaseCommand):
             submission.comment_sort = "top"
             comment_dict_list = []
             if i[1]['num_comments'] > 2000:
-                end_index = 200
+                submission.comments.replace_more(limit=0)
+                end_index = len(submission.comments)
             else:
-                end_index = 10
+                end_index = 15
             for j, top_level_comment in enumerate(submission.comments[0:end_index]):
                 topics = []
                 topics.append(gen_topic)
@@ -107,8 +119,7 @@ class Command(BaseCommand):
                 'comments': comment_dict_list
             })
             # print(data)
-        print('data dict:\n\n\n')
-        print(data)
+        print('data dict:')
         return data
 
     def append_data(self, subreddit):
@@ -120,8 +131,6 @@ class Command(BaseCommand):
             for j in i['comments']:
                 comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission)
                 comment.save()
-                if len(j['topic']) > 1:
-                    print('multitopic')
                 comment.topic.add(*j['topic'])
                 # self.stdout.write(self.style.SUCCESS('Comment saved'))
 

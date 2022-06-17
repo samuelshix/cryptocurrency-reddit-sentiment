@@ -37,7 +37,6 @@ class Command(BaseCommand):
         d = dt.timedelta(days = 128)
         a = today - d
         start_epoch = int(a.timestamp())
-        print(start_epoch)
         return self.api.search_submissions(
                             # user = 'CryptoDaily-',
                             title='Daily Altcoin Discussion',
@@ -59,6 +58,7 @@ class Command(BaseCommand):
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
         # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
+        print(crypto_threads)
         for i in crypto_threads.iterrows():
             comment = Submission.objects.filter(id=i[1].id)
             if comment:

@@ -216,20 +216,20 @@ var myChart = new Chart(ctx, {
 // tfAll.onClick = timeframeRedirect(tfAll.className)
 //   console.log('hey')
 $('#all').click(function(){
-  const asset = location.pathname.split('/')[1];
-  window.location.href='/'+asset+'/all';
+  const asset = location.pathname.split('/')[2];
+  window.location.href='/chart/'+asset+'/all';
 })
 $('#year').click(function(){
-  const asset = location.pathname.split('/')[1];
-  window.location.href='/'+asset+'/year';
+  const asset = location.pathname.split('/')[2];
+  window.location.href='/chart/'+asset+'/year';
 })
 $('#month').click(function(){
-  const asset = location.pathname.split('/')[1];
-  window.location.href='/'+asset+'/month';
+  const asset = location.pathname.split('/')[2];
+  window.location.href='/chart/'+asset+'/month';
 })
 $('#week').click(function(){
-  const asset = location.pathname.split('/')[1];
-  window.location.href='/'+asset+'/week';
+  const asset = location.pathname.split('/')[2];
+  window.location.href='/chart/'+asset+'/week';
 })
 $('.cryptocurrency').click(function(){
   $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')

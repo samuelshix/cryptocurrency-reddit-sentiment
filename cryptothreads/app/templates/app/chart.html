@@ -19,7 +19,7 @@
     {%for submission in submissions%}
       subreddit = document.createElement('p')
       subreddit.innerText = 'r/{{submission.subreddit}}'
-      subreddit.className = 'btn subreddit-btn'
+      subreddit.className = 'btn subreddit-btn {{submission.subreddit}}'
       subreddits.appendChild(subreddit)
       var submission_date = new Date('{{submission.date}}')
       var submission_date = submission_date.toDateString()
@@ -35,22 +35,68 @@
     var first_comment = true
     {%for subreddit in subreddit%}
     {%endfor%}
-    {%for comment in comments%}
+    {%for comment in comments_c%}
       {% autoescape off %}
       comment_true_text = `{{comment.text}}`
       {% endautoescape %}
-      var comment_date = new Date('{{comment.date}}')
-      var comment_date = comment_date.toDateString()
       if (first_comment) {
         top_comment_text.innerText = comment_true_text
         top_comment_score.innerText = '{{comment.score}}'
-        top_comment_date.innerText = comment_date
+        top_comment_date.innerText = submission_date
       }
       first_comment = false
       // if (comment_date === click_date) {
         // console.log(comment_date)
         var element = document.createElement('div')
-        element.className = "individual_comment"
+        element.className = "individual_comment_c"
+        element.classList.add("card")
+        var comment_score = document.createElement('p')
+        comment_score.innerText = `Score: {{comment.score}}`
+        comment_score.style.fontWeight = 500
+        var comment_text = document.createElement('p')
+        comment_text.innerText = comment_true_text
+        element.appendChild(comment_score)
+        element.appendChild(comment_text)
+        comments_element.appendChild(element)
+    {%endfor%}
+    {%for comment in comments_b%}
+      {% autoescape off %}
+      comment_true_text = `{{comment.text}}`
+      {% endautoescape %}
+      if (first_comment) {
+        top_comment_text.innerText = comment_true_text
+        top_comment_score.innerText = '{{comment.score}}'
+        top_comment_date.innerText = submission_date
+      }
+      first_comment = false
+      // if (comment_date === click_date) {
+        // console.log(comment_date)
+        var element = document.createElement('div')
+        element.className = "individual_comment_b"
+        element.classList.add("card")
+        var comment_score = document.createElement('p')
+        comment_score.innerText = `Score: {{comment.score}}`
+        comment_score.style.fontWeight = 500
+        var comment_text = document.createElement('p')
+        comment_text.innerText = comment_true_text
+        element.appendChild(comment_score)
+        element.appendChild(comment_text)
+        comments_element.appendChild(element)
+    {%endfor%}
+    {%for comment in comments_c%}
+      {% autoescape off %}
+      comment_true_text = `{{comment.text}}`
+      {% endautoescape %}
+      if (first_comment) {
+        top_comment_text.innerText = comment_true_text
+        top_comment_score.innerText = '{{comment.score}}'
+        top_comment_date.innerText = submission_date
+      }
+      first_comment = false
+      // if (comment_date === click_date) {
+        // console.log(comment_date)
+        var element = document.createElement('div')
+        element.className = "individual_comment_e"
         element.classList.add("card")
         var comment_score = document.createElement('p')
         comment_score.innerText = `Score: {{comment.score}}`
@@ -185,9 +231,30 @@ $('#week').click(function(){
   const asset = location.pathname.split('/')[1];
   window.location.href='/'+asset+'/week';
 })
-// $('.subreddit-btn').click(function(){
-//   $('')
-// })
+$('.cryptocurrency').click(function(){
+  $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')
+  $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
+  $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
+  $('.individual_comment_c').css('display','block')
+  $('.individual_comment_e').css('display','none')
+  $('.individual_comment_b').css('display','none')
+})
+$('.bitcoin').click(function(){
+  $('.bitcoin').css('background-color','rgba(182, 62, 20, 1)')
+  $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
+  $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
+  $('.individual_comment_b').css('display','block')
+  $('.individual_comment_e').css('display','none')
+  $('.individual_comment_c').css('display','none')
+})
+$('.ethtrader').click(function(){
+  $('.ethtrader').css('background-color','rgba(182, 62, 20, 1)')
+  $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
+  $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
+  $('.individual_comment_e').css('display','block')
+  $('.individual_comment_c').css('display','none')
+  $('.individual_comment_b').css('display','none')
+})
         });
 </script>
 <script>

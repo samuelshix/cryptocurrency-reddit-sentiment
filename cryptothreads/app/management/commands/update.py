@@ -34,17 +34,17 @@ class Command(BaseCommand):
 
     def update(self):
         today = dt.datetime.now()
-        d = dt.timedelta(days = 10)
+        d = dt.timedelta(days = 128)
         a = today - d
         start_epoch = int(a.timestamp())
         print(start_epoch)
         return self.api.search_submissions(
-                            user = 'CryptoDaily-',
-                            title='Daily Discussion',
-                             subreddit = 'cryptocurrency',
+                            # user = 'CryptoDaily-',
+                            title='Daily Altcoin Discussion',
+                             subreddit = 'ethtrader',
                             # num_comments = '>300',
                              sort='desc',
-                             after= start_epoch)  
+                            )  
 
     def get_discussion_submissions(self):
         return self.api.search_submissions(user = 'AutoModerator',
@@ -59,6 +59,12 @@ class Command(BaseCommand):
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
         # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
+        for i in crypto_threads.iterrows():
+            comment = Submission.objects.filter(id=i[1].id)
+            if comment:
+                comment.delete()
+                comment.save()
+
         print(crypto_threads)
         return crypto_threads
 
@@ -106,7 +112,7 @@ class Command(BaseCommand):
         for i in self.get_comments():
             if not Submission.objects.filter(date=i['post_date']):
             # submission = Submission.objects.filter(date=i['post_date'])
-                submission = Submission(id=i['id'], date=i['post_date'])
+                submission = Submission(id=i['id'], date=i['post_date'], subreddit='bitcoin')
                 submission.save()
                 # self.stdout.write(self.style.SUCCESS('Submission saved'))
                 for j in i['comments']:
@@ -161,11 +167,8 @@ class Command(BaseCommand):
             trading_day.save()
     def handle(self, *args, **options):
         try:
-            self.append_data()
-            try:
-                self.add_data()
-            except:
-                raise CommandError('Price API error.')
+            self.process_df()
+            # self.append_data()
             # self.stdout.write(self.style.SUCCESS('Success!'))
         except:
             raise CommandError('Reddit API error.')

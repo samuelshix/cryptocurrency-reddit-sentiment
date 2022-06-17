@@ -28,7 +28,7 @@ def date(request, timeframe='all', timestamp='', asset='total'):
     date = datetime.utcfromtimestamp(int(float(timestamp)))
     date = date.strftime('%Y-%m-%d')
     submissions = list(Submission.objects.filter(date=date))
-    subreddits = []
+    comments_c,comments_b,comments_e = [],[],[]
     url = 'app/{0}-chart.html'.format(asset)
     found_post = False
     index = convert_timeframes(timeframe)
@@ -36,23 +36,36 @@ def date(request, timeframe='all', timestamp='', asset='total'):
         comments = []
         found_post = True
         for submission in submissions: 
-            subreddits.append(submission.subreddit)
-            if asset == 'total':
-                for c in Comment.objects.filter(submission=submission):
-                    comments.append(c)
+            if submission.subreddit == 'cryptocurrency':
+                if asset == 'total':
+                    for c in Comment.objects.filter(submission=submission):
+                        comments_c.append(c)
+                else:
+                    for c in Comment.objects.filter(topic__type=asset,submission=submission):
+                        comments_c.append(c)
+            elif submission.subreddit == 'ethtrader':
+                if asset == 'total':
+                    for c in Comment.objects.filter(submission=submission):
+                        comments_e.append(c)
+                else:
+                    for c in Comment.objects.filter(topic__type=asset,submission=submission):
+                        comments_e.append(c)
             else:
-                for c in Comment.objects.filter(topic__type=asset,submission=submission):
-                    comments.append(c)
-    else:
-        comments = ''
+                if asset == 'total':
+                    for c in Comment.objects.filter(submission=submission):
+                        comments_b.append(c)
+                else:
+                    for c in Comment.objects.filter(topic__type=asset,submission=submission):
+                        comments_b.append(c)
+
     return render(request, url, {
         'qs': list(TradingDay.objects.all())[-index:],
-        'comments': comments,
+        'comments_c': comments_c,
+        'comments_b': comments_b,
+        'comments_e': comments_e,
         'submissions': submissions,
         'timestamp': timestamp,
-        'found_post': found_post,
-        'subreddits': subreddits
-        # 'date': date
+        'found_post': found_post
     })    
 
 def index(request,asset='total'):

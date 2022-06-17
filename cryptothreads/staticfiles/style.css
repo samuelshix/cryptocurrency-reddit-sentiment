@@ -14,12 +14,12 @@
 .card {
     border-radius: .3em;
 }
-.individual_comment {
+.individual_comment_c,.individual_comment_b,.individual_comment_e {
     font-size: .8em;
     max-height: 100px;
     overflow-y: auto;
 }
-.individual_comment.card {
+.individual_comment_c.card,.individual_comment_b.card,.individual_comment_e.card {
     padding: .3em;
     margin-top: .5em;
 }
@@ -27,7 +27,7 @@
     margin-bottom: .5rem;
 }
 .comments_card {
-    height: 50vh;
+    height: 60vh;
     overflow-y: scroll;
     padding: 0;
 }
@@ -48,7 +48,7 @@
     width: 100%;
     border: none;
 }
-#reddit_thread:hover, .btn-special:hover {
+#reddit_thread:hover, .btn-special:hover, .subreddit-btn {
     background-color: rgba(255, 87, 30, 1);
 }
 #reddit_thread a {
@@ -69,4 +69,15 @@
     max-height: 20em;
     overflow-y: auto;
     font-weight: 200;
+}
+#toggleTimeframe .btn-dark {
+    width: 24%;
+}
+.btn-secondary {
+    margin-right: 1em;
+}
+.subreddit-btn {
+    font-weight: 600;
+    color: white;
+    margin-right: .5em;
 }

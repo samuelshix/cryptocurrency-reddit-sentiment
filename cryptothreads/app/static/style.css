@@ -48,7 +48,7 @@
     width: 100%;
     border: none;
 }
-#reddit_thread:hover, .btn-special:hover {
+#reddit_thread:hover, .btn-special:hover, .subreddit-btn {
     background-color: rgba(255, 87, 30, 1);
 }
 #reddit_thread a {
@@ -72,4 +72,12 @@
 }
 #toggleTimeframe .btn-dark {
     width: 24%;
+}
+.btn-secondary {
+    margin-right: 1em;
+}
+.subreddit-btn {
+    font-weight: 600;
+    color: white;
+    margin-right: .5em;
 }

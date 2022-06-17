@@ -20,11 +20,11 @@ class Command(BaseCommand):
     def get_price_data(self):
         print("2")
 
-        btc_data = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=max').json()['prices']
+        btc_data = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=10').json()['prices']
         btc_price = pd.DataFrame(data=btc_data, columns=['time','btc_price'])
         btc_price["time"]= btc_price["time"].apply(pd.to_datetime, unit='ms').apply(lambda x: str(x)[:10])
         print('2.1')
-        eth_data = requests.get('https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=max').json()['prices']
+        eth_data = requests.get('https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=10').json()['prices']
         eth_price = pd.DataFrame(data=eth_data, columns=['time','eth_price'])
         eth_price["time"]= eth_price["time"].apply(pd.to_datetime, unit='ms').apply(lambda x: str(x)[:10])
         

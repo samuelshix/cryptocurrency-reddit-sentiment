@@ -12,19 +12,29 @@
     var top_comment_text = document.getElementById("top-comment-text")
     var top_comment_score = document.getElementById("top-comment-score")
     var top_comment_date = document.getElementById("top-comment-date")
+    var subreddits = document.getElementById("subreddits")
     top_comment.style.display = 'block'
     comments_element.innerHTML = ''
     var selectedComments=[]
     {%for submission in submissions%}
+      subreddit = document.createElement('p')
+      subreddit.innerText = 'r/{{submission.subreddit}}'
+      subreddit.className = 'btn subreddit-btn'
+      subreddits.appendChild(subreddit)
       var submission_date = new Date('{{submission.date}}')
       var submission_date = submission_date.toDateString()
       console.log('{{submission.subreddit}}')
         submission_element.style.display = 'block';
         var submission_id = '{{submission.id}}'
+        subreddit.click(function(){
+          submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
+        })
         submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
         submission_element.children[0].innerText = 'View Thread: '+ submission_date
     {%endfor%}
     var first_comment = true
+    {%for subreddit in subreddit%}
+    {%endfor%}
     {%for comment in comments%}
       {% autoescape off %}
       comment_true_text = `{{comment.text}}`
@@ -139,16 +149,48 @@ var myChart = new Chart(ctx, {
           data: dataX,
           csrfmiddlewaretoken: CSRFtoken
         }).done(function() {
+            var tf = location.pathname.split('/')[2];
+            if(!tf) {
+              tf='all'
+            }
             {%block window_location%}
             {%endblock%}
         })
     }
-  },
+  }
 });
+// function timeframeRedirect(timeframe) {
+//   $.post('',{
+//           data: dataX,
+//           csrfmiddlewaretoken: CSRFtoken
+//         }).done(function() {
+//           window.location.href='/total/all'
+//         })    
+// }
+// tfAll.onClick = timeframeRedirect(tfAll.className)
+//   console.log('hey')
+$('#all').click(function(){
+  const asset = location.pathname.split('/')[1];
+  window.location.href='/'+asset+'/all';
+})
+$('#year').click(function(){
+  const asset = location.pathname.split('/')[1];
+  window.location.href='/'+asset+'/year';
+})
+$('#month').click(function(){
+  const asset = location.pathname.split('/')[1];
+  window.location.href='/'+asset+'/month';
+})
+$('#week').click(function(){
+  const asset = location.pathname.split('/')[1];
+  window.location.href='/'+asset+'/week';
+})
+// $('.subreddit-btn').click(function(){
+//   $('')
+// })
         });
 </script>
 <script>
-
 </script>
 {%endblock scripts%}
 {%block content%}
@@ -176,27 +218,22 @@ var myChart = new Chart(ctx, {
     <div class="card" id="toggleTimeframe">
         <div class="card-body">
             <h5>Timeframes</h5>
-            <a href="">
-              <button class="btn btn-dark tf-all" >All</button>
-            </a>
-            <a href="">
-              <button class="btn btn-dark tf-y">1Y</button>
-            </a>
-            <a href="">
-              <button class="btn btn-dark tf-m">1M</button>
-            </a>
-            <a href="">
-              <button class="btn btn-dark tf-w">1W</button>
-            </a>
+            <button class="btn btn-dark tf" id="all">All</button>
+            <button class="btn btn-dark tf" id="year">Year</button>
+            <button class="btn btn-dark tf" id="month">Month</button>
+            <button class="btn btn-dark tf" id="week">Week</button>
         </div>
     </div>
   </div>
-  <div class="col-md-5 card comments_card">
-    <div class="card-body">
-      <h4 class="card-title" style="display:inline-block;">Comments</h4>
-      <button class="btn btn-primary" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
-      <div id="comments">
-        <p>Click on the chart to view comments!</p>
+  <div class="col-md-5">
+    <div id="subreddits"></div>
+    <div class="card comments_card">
+      <div class="card-body">
+        <h4 class="card-title" style="display:inline-block;">Comments</h4>
+        <button class="btn btn-primary" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
+        <div id="comments">
+          <p>Click on the chart to view comments!</p>
+        </div>
       </div>
     </div>
   </div>

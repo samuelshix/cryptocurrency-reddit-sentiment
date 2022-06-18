@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 from .models import Submission, Comment, Topic, TradingDay
 from datetime import datetime
 
@@ -79,49 +79,7 @@ def index(request,asset='total'):
 def base(request):
     return index(request)
 
-# def timeframe(request, asset, timeframe):
-#     timestamp, submissions = '',''
-#     if len(path) > 1:
-#         args = path.split('/')[1:]
-#         for i in args:
-#     date = datetime.utcfromtimestamp(int(float(timestamp)))
-#     date = date.strftime('%Y-%m-%d')
-#     submissions = list(Submission.objects.filter(date=date, subreddit='cryptocurrency'))
-#     # submissions.append(Submission.objects.filter(date=date, subreddit='ethtrader'))
-#     # submissions.append(Submission.objects.filter(date=date, subreddit='bitcoin'))
-#     url = 'app/{0}-chart.html'.format(asset)
-#     found_post = False
-#     if submissions:
-#         found_post = True
-#         if asset == 'total':
-#             comments = list(Comment.objects.filter(submission=submissions[0]))
-#         elif asset == 'btc':
-#             comments = list(Comment.objects.filter(topic__type='btc',submission=submissions[0]))
-#         elif asset == 'eth':
-#             comments = list(Comment.objects.filter(topic__type='eth',submission=submissions[0]))
-#     else:
-#         comments = ''
-#     print(found_post)
-#     return render(request, url, {
-#         'qs': list(TradingDay.objects.all()[800:]),
-#         'comments': comments,
-#         'submissions': submissions,
-#         'timestamp': timestamp,
-#         'found_post': found_post
-#         # 'date': date
-#     })    
-
-# def daily(request):
-
-# def eth(request):
-
-# class ChartView(TemplateView):
-#     template_name = 'app/chart.html'
-
-#     def get_context_data(self, **kwargs):
-#         ctx = super().get_context_data(**kwargs)
-#         ctx['qs'] = TradingDay.objects.all()[2478:]
-#         ctx['comments'] = Comment.objects.all()
-#         # for comment in ctx['comments']:
-
-#         return ctx
+class LoginRedirectView(RedirectView):
+    pattern_name = 'redirect'
+    def get_redirect_url(self, *args, **kwargs):
+        return '/chart/total/all'

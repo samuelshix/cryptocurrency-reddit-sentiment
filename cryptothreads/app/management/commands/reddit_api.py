@@ -50,6 +50,7 @@ class Command(BaseCommand):
             return self.api.search_submissions(
                                         title = 'Daily Discussion',
                                         subreddit = 'ethtrader',
+                                        title:not = 'altcoin',
                                         sort = 'desc',
                                         num_comments = '>100',
                                         )
@@ -90,20 +91,19 @@ class Command(BaseCommand):
             for j, top_level_comment in enumerate(submission.comments[0:end_index]):
                 topics = []
                 topics.append(gen_topic)
-                topics.append(eth_topic)
 
-                # special_topic = False
-                # if j <= 10:
-                #     topics.append(gen_topic)
-                # body_lower = top_level_comment.body.lower()
-                # if ' eth ' in body_lower or 'ethereum' in body_lower:
-                #     topics.append(eth_topic)
-                #     special_topic = True
-                # if ' btc ' in body_lower or 'bitcoin' in body_lower:
-                #     topics.append(btc_topic)
-                #     special_topic = True
-                # if not special_topic and j > 10:
-                #     continue
+                special_topic = False
+                if j <= 10:
+                    topics.append(gen_topic)
+                body_lower = top_level_comment.body.lower()
+                if ' eth ' in body_lower or 'ethereum' in body_lower:
+                    topics.append(eth_topic)
+                    special_topic = True
+                if ' btc ' in body_lower or 'bitcoin' in body_lower:
+                    topics.append(btc_topic)
+                    special_topic = True
+                if not special_topic and j > 10:
+                    continue
                 comment_dict = {
                     'id': top_level_comment.id,
                     'text': top_level_comment.body,
@@ -136,7 +136,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            self.append_data(options['subreddit'][0])
+            # self.append_data(options['subreddit'][0])
+            self.append_data('bitcoin')
+            self.append_data('cryptocurrency')
+            self.append_data('ethtrader')
             print('Success!')
             # self.stdout.write(self.style.SUCCESS('Success!'))
         except:

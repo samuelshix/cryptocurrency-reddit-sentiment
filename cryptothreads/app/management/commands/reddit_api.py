@@ -50,16 +50,15 @@ class Command(BaseCommand):
             return self.api.search_submissions(
                                         title = 'Daily Discussion',
                                         subreddit = 'ethtrader',
-                                        title:not = 'altcoin',
                                         sort = 'desc',
-                                        num_comments = '>100',
+                                        # num_comments = '>100',
                                         )
         elif subreddit == 'bitcoin':
             return self.api.search_submissions(
                                         title = 'Daily Discussion, ',
                                         subreddit = 'bitcoin',
                                         sort = 'desc',
-                                        num_comments = '>100',
+                                        # num_comments = '>100',
                                         after= start_epoch
                                         )
     def process_df(self, subreddit):

@@ -40,6 +40,7 @@ class Command(BaseCommand):
                                         sort = 'desc',
                                         )
     def process_df(self, subreddit):
+        print('process_df')
         df = pd.DataFrame(self.get_discussion_submissions(subreddit))
         crypto_threads = df[['id','num_comments','created_utc']]
         print('Using df:')
@@ -48,6 +49,7 @@ class Command(BaseCommand):
 
     # to get top 15 comments for each day: sort by popularity, 
     def get_comments(self, subreddit):
+        print('get_comments')
         gen_topic = Topic.objects.filter(type='gen')[0]
         btc_topic = Topic.objects.filter(type='btc')[0]
         eth_topic = Topic.objects.filter(type='eth')[0]
@@ -98,6 +100,7 @@ class Command(BaseCommand):
         return data
 
     def append_data(self, subreddit):
+        print('append_data')
         for i in self.get_comments(subreddit):
             submission = Submission(date=i['post_date'], id=i['id'], subreddit=subreddit)
             submission.save()

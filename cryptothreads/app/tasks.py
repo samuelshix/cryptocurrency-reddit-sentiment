@@ -1,5 +1,5 @@
 from celery import shared_task
-
+import praw
 from pmaw import PushshiftAPI
 import pandas as pd
 from datetime import datetime
@@ -9,27 +9,43 @@ from django.core.management.base import BaseCommand, CommandError
 import requests
 
 class Update():
-    def update(self):
+    def __init__(self):
+        self.api = PushshiftAPI()
+        self.reddit = praw.Reddit(
+        client_id="3B_hPuLSNInJTsozWMHqcA",
+        client_secret="mMcsjS3apcp-wIxm2mcGNlEaAZsn_A",
+        user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
+        )
         today = dt.datetime.now()
-        d = dt.timedelta(days = 128)
+        d = dt.timedelta(days = 1)
         a = today - d
-        start_epoch = int(a.timestamp())
-        return self.api.search_submissions(
-                            # user = 'CryptoDaily-',
-                            title='Daily Altcoin Discussion',
-                             subreddit = 'ethtrader',
-                            # num_comments = '>300',
-                             sort='desc',
-                            )  
+        self.yesterday = a
 
-    def get_discussion_submissions(self):
-        return self.api.search_submissions(user = 'AutoModerator',
-                                    title = 'Daily Discussion - ',
-                                    subreddit = 'cryptocurrency',
-                                    # num_comments = '>300',
-                                    limit = 2000,
-                                    sort = 'desc')
-  
+    def update_eth(self):
+        start_epoch = int(self.a.timestamp())
+        x = self.api.search_submissions(
+                        title = 'Daily Discussion',
+                        stickied= 'true',
+                        subreddit = 'ethtrader',
+                        sort = 'desc',
+                        limit = 1
+                            )  
+        eth = pd.DataFrame(x)
+        eth[["created_utc"]] = eth[["created_utc"]].apply(pd.to_datetime, unit='s')
+        eth['created_utc'] = eth['created_utc'].dt.date
+        submission = Submission(id=eth.id[0], date=eth.created_utc[0], subreddit='ethtrader')
+        submission.save()
+        return eth 
+    
+    def update(self, subreddit):
+        if subreddit=='ethtrader': return self.update_eth
+        x = self.api.search_submissions(
+                        title = 'Daily Discussion',
+                        stickied= 'true',
+                        subreddit = subreddit,
+                        sort = 'desc',
+                        after = self.yesterday
+                            )  
     def process_df(self):
         df = pd.DataFrame(self.update())
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')

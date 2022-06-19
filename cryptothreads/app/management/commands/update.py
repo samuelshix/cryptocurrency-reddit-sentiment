@@ -6,6 +6,7 @@ import datetime as dt
 from app.models import Submission, Comment, Topic, TradingDay
 from django.core.management.base import BaseCommand, CommandError
 import requests
+
 class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()
@@ -17,32 +18,19 @@ class Command(BaseCommand):
         user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
         )
 
-    # def add_arguments(self, parser):
-    #     parser.add_argument(
-    #         '--text',
-    #         action='store_true',
-    #         help='Update text'
-    #     )
-
-    # def update_text(self):
-    #     for comment in Comment.objects.all():
-    #         comment.text = re.sub("'","’",comment.text)
-    #         comment.text = re.sub("`","’",comment.text)
-    #         comment.text = re.sub('"',"“",comment.text)
-    #         comment.save()
-
     def update(self):
         today = dt.datetime.now()
         d = dt.timedelta(days = 128)
         a = today - d
         start_epoch = int(a.timestamp())
-        return self.api.search_submissions(
-                            # user = 'CryptoDaily-',
-                            title='Daily Altcoin Discussion',
-                             subreddit = 'ethtrader',
-                            # num_comments = '>300',
-                             sort='desc',
+        x = self.api.search_submissions(
+                        title = 'Daily Discussion',
+                        stickied= 'true',
+                        subreddit = 'ethtrader',
+                        sort = 'desc',
+                        limit = 1
                             )  
+        eth = pd.DataFrame(x)
 
     def get_discussion_submissions(self):
         return self.api.search_submissions(user = 'AutoModerator',

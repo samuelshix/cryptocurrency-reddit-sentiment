@@ -16,13 +16,6 @@ class Command(BaseCommand):
         user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
         )
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            'subreddit',
-            nargs=1,
-            type=str
-        )
-
     def get_discussion_submissions(self, subreddit):
         print('Using {0} subreddit...'.format(subreddit))
         if subreddit == 'cryptocurrency':

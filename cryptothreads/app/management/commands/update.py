@@ -116,7 +116,7 @@ class Command(BaseCommand):
                         # self.stdout.write(self.style.SUCCESS('Comment saved'))
     ### UPDATE PRICE ###
     def get_price_data(self, days):
-        print("2")
+        print("3")
 
         btc_data = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days={0}'.format(days)).json()['prices']
         btc_price = pd.DataFrame(data=btc_data, columns=['time','btc_price'])

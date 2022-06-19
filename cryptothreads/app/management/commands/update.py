@@ -6,7 +6,6 @@ import datetime as dt
 from app.models import Submission, Comment, Topic, TradingDay
 from django.core.management.base import BaseCommand, CommandError
 import requests
-import re
 class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()

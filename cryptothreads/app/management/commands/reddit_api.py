@@ -40,26 +40,25 @@ class Command(BaseCommand):
         start_epoch = int(a.timestamp())
         print('Using {0} subreddit...'.format(subreddit))
         if subreddit == 'cryptocurrency':
-            return self.api.search_submissions(user = 'AutoModerator',
+            return self.api.search_submissions(
                             title = 'Daily Discussion',
+                            stickied= 'true',
                             subreddit = 'cryptocurrency',
                             sort = 'desc',
-                            num_comments = '>50',
                             )
         elif subreddit == 'ethtrader':
             return self.api.search_submissions(
                                         title = 'Daily Discussion',
+                                        stickied= 'true',
                                         subreddit = 'ethtrader',
                                         sort = 'desc',
-                                        # num_comments = '>100',
                                         )
         elif subreddit == 'bitcoin':
             return self.api.search_submissions(
                                         title = 'Daily Discussion, ',
+                                        stickied= 'true',
                                         subreddit = 'bitcoin',
                                         sort = 'desc',
-                                        # num_comments = '>100',
-                                        after= start_epoch
                                         )
     def process_df(self, subreddit):
         df = pd.DataFrame(self.get_discussion_submissions(subreddit))
@@ -78,6 +77,8 @@ class Command(BaseCommand):
         df = self.process_df(subreddit)
         data = []
         for i in df.iterrows():
+            if Submission.objects.filter(id=i[1].id):
+                continue
             # print(i[1])
             submission = self.reddit.submission(i[1].id)
             submission.comment_sort = "top"
@@ -123,7 +124,7 @@ class Command(BaseCommand):
 
     def append_data(self, subreddit):
         for i in self.get_comments(subreddit):
-            print(i)
+            # print(i)
             submission = Submission(date=i['post_date'], id=i['id'], subreddit=subreddit)
             submission.save()
             # self.stdout.write(self.style.SUCCESS('Submission saved'))

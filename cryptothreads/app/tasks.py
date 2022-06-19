@@ -145,4 +145,5 @@ class Update():
 
 @shared_task(name='update_db')
 def stuff():
-    print('hi')
+    update = Update()
+    update.add_data()

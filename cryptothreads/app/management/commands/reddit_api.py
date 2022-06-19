@@ -2,11 +2,8 @@ import praw
 from pmaw import PushshiftAPI
 import pandas as pd
 from datetime import datetime
-import datetime as dt
 from app.models import Submission, Comment, Topic
 from django.core.management.base import BaseCommand, CommandError
-import requests
-import re
 
 class Command(BaseCommand):
     def __init__(self):
@@ -25,19 +22,8 @@ class Command(BaseCommand):
             nargs=1,
             type=str
         )
-    # def get_discussion_submissions(self):
-        # return self.api.search_submissions(user = 'AutoModerator',
-        #                             title = 'Daily Discussion',
-        #                             subreddit = 'cryptocurrency',
-        #                             sort = 'desc',
-        #                             num_comments = '>50',
-        #                             limit = 2000)
 
     def get_discussion_submissions(self, subreddit):
-        today = dt.datetime.now()
-        d = dt.timedelta(days = 126)
-        a = today - d
-        start_epoch = int(a.timestamp())
         print('Using {0} subreddit...'.format(subreddit))
         if subreddit == 'cryptocurrency':
             return self.api.search_submissions(
@@ -62,14 +48,12 @@ class Command(BaseCommand):
                                         )
     def process_df(self, subreddit):
         df = pd.DataFrame(self.get_discussion_submissions(subreddit))
-        # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')
-        # df['created_utc'] = df['created_utc'].dt.date
         crypto_threads = df[['id','num_comments','created_utc']]
         print('Using df:')
         print(crypto_threads)
         return crypto_threads
 
-    # to get top 10 for each day on multi-day post: sort by popularity, 
+    # to get top 15 comments for each day: sort by popularity, 
     def get_comments(self, subreddit):
         gen_topic = Topic.objects.filter(type='gen')[0]
         btc_topic = Topic.objects.filter(type='btc')[0]
@@ -111,37 +95,30 @@ class Command(BaseCommand):
                     'date': datetime.utcfromtimestamp(top_level_comment.created_utc).strftime('%Y-%m-%d'),
                     'topic': topics
                     }
-                # print(comment_dict)
                 comment_dict_list.append(comment_dict)
             data.append({
                 'id': i[1].id,
                 'post_date': datetime.utcfromtimestamp(i[1].created_utc).strftime('%Y-%m-%d'),
                 'comments': comment_dict_list
             })
-            # print(data)
         print('data dict:')
         return data
 
     def append_data(self, subreddit):
         for i in self.get_comments(subreddit):
-            # print(i)
             submission = Submission(date=i['post_date'], id=i['id'], subreddit=subreddit)
             submission.save()
-            # self.stdout.write(self.style.SUCCESS('Submission saved'))
             for j in i['comments']:
                 comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission)
                 comment.save()
                 comment.topic.add(*j['topic'])
-                # self.stdout.write(self.style.SUCCESS('Comment saved'))
 
     def handle(self, *args, **options):
         try:
-            # self.append_data(options['subreddit'][0])
             self.append_data('bitcoin')
             self.append_data('cryptocurrency')
             self.append_data('ethtrader')
             print('Success!')
-            # self.stdout.write(self.style.SUCCESS('Success!'))
         except:
             raise CommandError('An error has occurred.')
 

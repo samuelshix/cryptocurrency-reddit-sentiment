@@ -28,12 +28,12 @@ def date(request, timeframe='all', timestamp='', asset='total'):
     date = datetime.utcfromtimestamp(int(float(timestamp)))
     date = date.strftime('%Y-%m-%d')
     submissions = list(Submission.objects.filter(date=date))
+    relevant_submissions = []
     comments_c,comments_b,comments_e = [],[],[]
     url = 'app/{0}-chart.html'.format(asset)
     found_post = False
     index = convert_timeframes(timeframe)
     if submissions:
-        comments = []
         for submission in submissions: 
             if submission.subreddit == 'cryptocurrency':
                 if asset == 'total':
@@ -42,6 +42,8 @@ def date(request, timeframe='all', timestamp='', asset='total'):
                 else:
                     for c in Comment.objects.filter(topic__type=asset,submission=submission):
                         comments_c.append(c)
+                if comments_c:
+                    relevant_submissions.append(submission)
             elif submission.subreddit == 'ethtrader':
                 if asset == 'total':
                     for c in Comment.objects.filter(submission=submission):
@@ -49,6 +51,8 @@ def date(request, timeframe='all', timestamp='', asset='total'):
                 else:
                     for c in Comment.objects.filter(topic__type=asset,submission=submission):
                         comments_e.append(c)
+                if comments_e:
+                    relevant_submissions.append(submission)
             else:
                 if asset == 'total':
                     for c in Comment.objects.filter(submission=submission):
@@ -56,6 +60,8 @@ def date(request, timeframe='all', timestamp='', asset='total'):
                 else:
                     for c in Comment.objects.filter(topic__type=asset,submission=submission):
                         comments_b.append(c)
+                if comments_b:
+                    relevant_submissions.append(submission)
     if comments_c or comments_b or comments_e:
         found_post = True
 
@@ -64,7 +70,7 @@ def date(request, timeframe='all', timestamp='', asset='total'):
         'comments_c': comments_c,
         'comments_b': comments_b,
         'comments_e': comments_e,
-        'submissions': submissions,
+        'submissions': relevant_submissions,
         'timestamp': timestamp,
         'found_post': found_post
     })    

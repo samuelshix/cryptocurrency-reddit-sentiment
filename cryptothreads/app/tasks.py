@@ -17,10 +17,12 @@ class Update():
         user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
         )
         today = dt.datetime.now()
-        d = dt.timedelta(days = 1)
+        d = dt.timedelta(days = 2)
         a = today - d
         self.yesterday = a
-
+        self.gen_topic = Topic.objects.filter(type='gen')[0]
+        self.btc_topic = Topic.objects.filter(type='btc')[0]
+        self.eth_topic = Topic.objects.filter(type='eth')[0]
     def update_eth(self):
         start_epoch = int(self.a.timestamp())
         x = self.api.search_submissions(
@@ -28,24 +30,66 @@ class Update():
                         stickied= 'true',
                         subreddit = 'ethtrader',
                         sort = 'desc',
-                        limit = 1
+                        limit = 2
                             )  
         eth = pd.DataFrame(x)
         eth[["created_utc"]] = eth[["created_utc"]].apply(pd.to_datetime, unit='s')
         eth['created_utc'] = eth['created_utc'].dt.date
         submission = Submission(id=eth.id[0], date=eth.created_utc[0], subreddit='ethtrader')
         submission.save()
+        api = self.reddit.submission(i[1].id)
+        api.comment_sort = "top"
+        for i in api.comments[0:10]:
+            topics = [self.gen_topic]
+            body_lower = i.body.lower()
+            if ' eth ' in body_lower or 'ethereum' in body_lower:
+                topics.append(self.eth_topic)
+            elif ' btc ' in body_lower or 'bitcoin' in body_lower:
+                topics.append(self.btc_topic)
+            c = Comment(id=i.id,text=i.body, score=i.score, 
+            date=datetime.utcfromtimestamp(i.created_utc).strftime('%Y-%m-%d'),
+            submission=submission)
+            c.save()
+            c.topic.add(*topics)
         return eth 
-    
-    def update(self, subreddit):
-        if subreddit=='ethtrader': return self.update_eth
+
+    def update_btc(self):
+        start_epoch = int(self.a.timestamp())
         x = self.api.search_submissions(
                         title = 'Daily Discussion',
                         stickied= 'true',
-                        subreddit = subreddit,
+                        subreddit = 'bitcoin',
                         sort = 'desc',
-                        after = self.yesterday
+                        limit = 1
                             )  
+        eth = pd.DataFrame(x)
+        eth[["created_utc"]] = eth[["created_utc"]].apply(pd.to_datetime, unit='s')
+        eth['created_utc'] = eth['created_utc'].dt.date
+        submission = Submission(id=eth.id[0], date=eth.created_utc[0], subreddit='bitcoin')
+        submission.save()
+        return eth 
+
+    def update_cry(self):
+        start_epoch = int(self.a.timestamp())
+        x = self.api.search_submissions(
+                        title = 'Daily Discussion',
+                        stickied= 'true',
+                        subreddit = 'cryptocurrency',
+                        sort = 'desc',
+                        limit = 1
+                            )  
+        eth = pd.DataFrame(x)
+        eth[["created_utc"]] = eth[["created_utc"]].apply(pd.to_datetime, unit='s')
+        eth['created_utc'] = eth['created_utc'].dt.date
+        submission = Submission(id=eth.id[0], date=eth.created_utc[0], subreddit='cryptocurrency')
+        submission.save()
+        return eth 
+
+    def update(self, subreddit):
+        if subreddit=='ethtrader': return self.update_eth()
+        elif subreddit=='bitcoin': return self.update_btc()
+        elif subreddit=='cryptocurrency': return self.update_cry()
+
     def process_df(self):
         df = pd.DataFrame(self.update())
         # df[["created_utc"]] = df[["created_utc"]].apply(pd.to_datetime, unit='s')

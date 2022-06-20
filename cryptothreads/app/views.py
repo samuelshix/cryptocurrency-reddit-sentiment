@@ -32,6 +32,7 @@ def date(request, timeframe='all', timestamp='', asset='total'):
     url = 'app/{0}-chart.html'.format(asset)
     found_post = False
     index = convert_timeframes(timeframe)
+    asset = Topic.objects.filter(type=asset)
     if submissions:
         comments = []
         found_post = True

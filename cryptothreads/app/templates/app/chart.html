@@ -83,7 +83,7 @@
         element.appendChild(comment_text)
         comments_element.appendChild(element)
     {%endfor%}
-    {%for comment in comments_c%}
+    {%for comment in comments_e%}
       {% autoescape off %}
       comment_true_text = `{{comment.text}}`
       {% endautoescape %}

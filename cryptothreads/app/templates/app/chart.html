@@ -59,6 +59,9 @@
         element.appendChild(comment_text)
         comments_element.appendChild(element)
     {%endfor%}
+    console.log('{{comment_b}}')
+    {%if comments_b%}
+    {%endif%}
     {%for comment in comments_b%}
       {% autoescape off %}
       comment_true_text = `{{comment.text}}`

@@ -34,7 +34,6 @@ def date(request, timeframe='all', timestamp='', asset='total'):
     index = convert_timeframes(timeframe)
     if submissions:
         comments = []
-        found_post = True
         for submission in submissions: 
             if submission.subreddit == 'cryptocurrency':
                 if asset == 'total':
@@ -57,6 +56,8 @@ def date(request, timeframe='all', timestamp='', asset='total'):
                 else:
                     for c in Comment.objects.filter(topic__type=asset,submission=submission):
                         comments_b.append(c)
+    if comments_c or comments_b or comments_e:
+        found_post = True
 
     return render(request, url, {
         'qs': list(TradingDay.objects.all())[-index:],

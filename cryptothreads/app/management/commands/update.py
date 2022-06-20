@@ -154,7 +154,8 @@ class Command(BaseCommand):
             trading_day.save()
     def handle(self, *args, **options):
         try:
-            self.process_df()
+            # self.process_df()
+            print('Update task')
             # self.append_data()
             # self.stdout.write(self.style.SUCCESS('Success!'))
         except:

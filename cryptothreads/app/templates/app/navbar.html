@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'index' asset='total' %}">Crypto-Threads</a>
+    <a class="navbar-brand" href="{% url 'timeframe' asset='total' timeframe='all' %}">Crypto-Threads</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -7,13 +7,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'index' asset='total' %}">Total Cap</a>
+          <a class="nav-link" href="{% url 'timeframe' asset='total' timeframe='all' %}">Total Cap</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'index' asset='btc' %}">Bitcoin</a>
+          <a class="nav-link" href="{% url 'timeframe' asset='btc' timeframe='all' %}">Bitcoin</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="{% url 'index' asset='eth' %}">Ethereum</a>
+          <a class="nav-link" href="{% url 'timeframe' asset='eth' timeframe='all' %}">Ethereum</a>
         </li>
         <li class="nav-item dropdown">
           <!-- <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

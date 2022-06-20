@@ -199,12 +199,14 @@ var myChart = new Chart(ctx, {
             if(!tf) {
               tf='all'
             }
+            var timeframe = location.pathname.split('/')[3]
             {%block window_location%}
             {%endblock%}
         })
     }
   }
 });
+console.log(location.pathname.split('/'));
 // function timeframeRedirect(timeframe) {
 //   $.post('',{
 //           data: dataX,

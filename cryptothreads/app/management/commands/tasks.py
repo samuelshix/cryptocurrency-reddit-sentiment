@@ -44,7 +44,7 @@ class Command(BaseCommand):
             print(submission)
             api = self.reddit.submission(i[1].id)
             api.comment_sort = "top"
-            for i in api.comments[0:50]:
+            for i in api.comments[0:100]:
                 print(i)
                 if not Comment.objects.filter(id=i.id):
                     topics = [self.gen_topic]

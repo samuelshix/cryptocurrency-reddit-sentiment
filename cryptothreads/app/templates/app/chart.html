@@ -2,132 +2,55 @@
 
 {%block scripts%} 
 <script>
-  $(document).ready(function(){
-  {%if timestamp%}
-    var click_date = (new Date({{timestamp}})).toDateString()
-    var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+
+
+    function populateComments(submissions, comments) {
+    // var click_date = (new Date(submission.date)).toDateString()
     var comments_element = document.getElementById("comments");
     var submission_element = document.getElementById("reddit_thread")
     var top_comment = document.getElementById("top-comment")
     var top_comment_text = document.getElementById("top-comment-text")
     var top_comment_score = document.getElementById("top-comment-score")
     var top_comment_date = document.getElementById("top-comment-date")
-    var subreddits = document.getElementById("subreddits")
     top_comment.style.display = 'block'
     comments_element.innerHTML = ''
-    var selectedComments=[]
-    {%for submission in submissions%}
-      subreddit = document.createElement('p')
-      subreddit.innerText = 'r/{{submission.subreddit}}'
-      subreddit.className = 'btn subreddit-btn {{submission.subreddit}}'
-      subreddits.appendChild(subreddit)
-      var submission_date = new Date('{{submission.date}}')
-      var submission_date = submission_date.toDateString()
-      console.log('{{submission.subreddit}}')
-        submission_element.style.display = 'block';
-        var submission_id = '{{submission.id}}'
+    var date = (new Date(submissions[0].date)).toDateString()
+    submissions.forEach(submission => {
+      subreddit = document.getElementsByClassName(submission.subreddit)[0]
+      subreddit.style.display = 'inline-block'
+      subreddit.innerText = `r/${submission.subreddit}`
+      submission_element.style.display = 'block';
         subreddit.click(function(){
-          submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
+          submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission.id)
         })
-        submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission_id)
-        submission_element.children[0].innerText = 'View Thread: '+ submission_date
-    {%endfor%}
-    var first_comment = true
-    {%for subreddit in subreddit%}
-    {%endfor%}
-    {%for comment in comments_c%}
-      {% autoescape off %}
-      comment_true_text = `{{comment.text}}`
-      {% endautoescape %}
-      if (first_comment) {
-        top_comment_text.innerText = comment_true_text
-        top_comment_score.innerText = '{{comment.score}}'
-        top_comment_date.innerText = submission_date
+        submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission.id)
+        submission_element.children[0].innerText = 'View Thread: '+ date
+    });
+    comments.forEach((comment,i) => {
+      if(i===0) {
+        top_comment_text.innerText = comment.text
+        top_comment_score.innerText = comment.score
+        top_comment_date.innerText = date        
       }
-      first_comment = false
-      // if (comment_date === click_date) {
-        // console.log(comment_date)
-        var element = document.createElement('div')
-        element.className = "individual_comment_c"
-        element.classList.add("card")
-        var comment_score = document.createElement('p')
-        comment_score.innerText = `Score: {{comment.score}}`
-        comment_score.style.fontWeight = 500
-        var comment_text = document.createElement('p')
-        comment_text.innerText = comment_true_text
-        element.appendChild(comment_score)
-        element.appendChild(comment_text)
-        comments_element.appendChild(element)
-    {%endfor%}
-    console.log('{{comment_b}}')
-    {%if comments_b%}
-    {%endif%}
-    {%for comment in comments_b%}
-      {% autoescape off %}
-      comment_true_text = `{{comment.text}}`
-      {% endautoescape %}
-      if (first_comment) {
-        top_comment_text.innerText = comment_true_text
-        top_comment_score.innerText = '{{comment.score}}'
-        top_comment_date.innerText = submission_date
-      }
-      first_comment = false
-      // if (comment_date === click_date) {
-        // console.log(comment_date)
-        var element = document.createElement('div')
-        element.className = "individual_comment_b"
-        element.classList.add("card")
-        var comment_score = document.createElement('p')
-        comment_score.innerText = `Score: {{comment.score}}`
-        comment_score.style.fontWeight = 500
-        var comment_text = document.createElement('p')
-        comment_text.innerText = comment_true_text
-        element.appendChild(comment_score)
-        element.appendChild(comment_text)
-        comments_element.appendChild(element)
-    {%endfor%}
-    {%for comment in comments_e%}
-      {% autoescape off %}
-      comment_true_text = `{{comment.text}}`
-      {% endautoescape %}
-      if (first_comment) {
-        top_comment_text.innerText = comment_true_text
-        top_comment_score.innerText = '{{comment.score}}'
-        top_comment_date.innerText = submission_date
-      }
-      first_comment = false
-      // if (comment_date === click_date) {
-        // console.log(comment_date)
-        var element = document.createElement('div')
-        element.className = "individual_comment_e"
-        element.classList.add("card")
-        var comment_score = document.createElement('p')
-        comment_score.innerText = `Score: {{comment.score}}`
-        comment_score.style.fontWeight = 500
-        var comment_text = document.createElement('p')
-        comment_text.innerText = comment_true_text
-        element.appendChild(comment_score)
-        element.appendChild(comment_text)
-        comments_element.appendChild(element)
-    {%endfor%}
-    {%if not found_post%}
-      submission_element.style.display = 'None'
-      top_comment.style.display = 'None'
-      comments_element.innerHTML = 'Error: missing thread for selected date';
-    {%endif%}
-  {%endif%}
-  });
-  </script>
+      var element = document.createElement('div')
+      element.className = `comment_${comment.subreddit}`
+      element.classList.add("card")
+      var comment_score = document.createElement('p')
+      comment_score.innerText = `Score: ${comment.score} | Subreddit: r/${comment.subreddit}`
+      comment_score.style.fontWeight = 500
+      var comment_text = document.createElement('p')
+      comment_text.innerText = comment.text
+      element.appendChild(comment_score)
+      element.appendChild(comment_text)
+      comments_element.appendChild(element)
+    })
+    }
+</script>
 <script>
     // jquery function
     $(document).ready(function(){
         var ctx = document.getElementById("cryptoCap").getContext("2d");
-        var comments_element = document.getElementById("comments");
-        var submission_element = document.getElementById("reddit_thread")
-        var top_comment = document.getElementById("top-comment")
-        var top_comment_text = document.getElementById("top-comment-text")
-        var top_comment_score = document.getElementById("top-comment-score")
-        var top_comment_date = document.getElementById("top-comment-date")
+      
 var myChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -189,38 +112,35 @@ var myChart = new Chart(ctx, {
         }
     },
     onClick: (e) => {
-        comments_element.innerHTML = '';
         const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
         const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x)/1000;
         var click_date = (new Date(dataX)).toDateString()
         var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-        $.post('',{
-          data: dataX,
-          csrfmiddlewaretoken: CSRFtoken
-        }).done(function() {
-            var tf = location.pathname.split('/')[2];
-            if(!tf) {
-              tf='all'
-            }
-            var timeframe = location.pathname.split('/')[3]
-            {%block window_location%}
-            {%endblock%}
+        $.ajax({
+          type: 'GET',
+          url: '/get/comment-data/',
+          data: {
+            'asset': location.pathname.split('/')[2],
+            'timestamp': dataX
+          },
+          success: function(data) {
+            populateComments(data.submissions,data.comments)
+            console.log(data.submissions)
+          },
+          error: function() {
+            alert("Error: Missing thread for date, choose a different date.")
+          },
+
         })
     }
   }
 });
-console.log(location.pathname.split('/'));
-// function timeframeRedirect(timeframe) {
-//   $.post('',{
-//           data: dataX,
-//           csrfmiddlewaretoken: CSRFtoken
-//         }).done(function() {
-//           window.location.href='/total/all'
-//         })    
-// }
-// tfAll.onClick = timeframeRedirect(tfAll.className)
-//   console.log('hey')
-$('#all').click(function(){
+
+        });
+</script>
+<script>
+  $(document).ready(function(){
+    $('#all').click(function(){
   const asset = location.pathname.split('/')[2];
   window.location.href='/chart/'+asset+'/all';
 })
@@ -236,33 +156,54 @@ $('#week').click(function(){
   const asset = location.pathname.split('/')[2];
   window.location.href='/chart/'+asset+'/week';
 })
+// $('.cryptocurrency').click(function(){
+//   if(clicked) {
+//     $('#comments').children().show()
+//     clicked = false
+//   } else { 
+//     $('.comment_cryptocurrency').show()
+//     $('.comment_ethtrader').hide()
+//     $('.comment_bitcoin').hide()
+//     clicked = true 
+//   }
+//   $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')
+//   $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
+//   $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
+var flag, flag1, flag2 = false
 $('.cryptocurrency').click(function(){
+  if (flag) {
+  console.log('hi')
   $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')
   $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
   $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
-  $('.individual_comment_c').css('display','block')
-  $('.individual_comment_e').css('display','none')
-  $('.individual_comment_b').css('display','none')
+  $('.comment_cryptocurrency').css('display','block')
+  $('.comment_ethtrader').css('display','none')
+  $('.comment_bitcoin').css('display','none')
+  } else {flag=true}
 })
 $('.bitcoin').click(function(){
+  if (flag1) {
   $('.bitcoin').css('background-color','rgba(182, 62, 20, 1)')
   $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
   $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
-  $('.individual_comment_b').css('display','block')
-  $('.individual_comment_e').css('display','none')
-  $('.individual_comment_c').css('display','none')
+  $('.comment_bitcoin').css('display','block')
+  $('.comment_ethtrader').css('display','none')
+  $('.comment_cryptocurrency').css('display','none')
+  } else {flag1=true}
+
 })
 $('.ethtrader').click(function(){
+  if (flag2) {
   $('.ethtrader').css('background-color','rgba(182, 62, 20, 1)')
   $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
   $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
-  $('.individual_comment_e').css('display','block')
-  $('.individual_comment_c').css('display','none')
-  $('.individual_comment_b').css('display','none')
+  $('.comment_ethtrader').css('display','block')
+  $('.comment_cryptocurrency').css('display','none')
+  $('.comment_bitcoin').css('display','none')
+  } else {flag2=true}
+
 })
-        });
-</script>
-<script>
+  })
 </script>
 {%endblock scripts%}
 {%block content%}
@@ -298,7 +239,11 @@ $('.ethtrader').click(function(){
     </div>
   </div>
   <div class="col-md-5">
-    <div id="subreddits"></div>
+    <div id="subreddits">
+      <p class="btn subreddit-btn cryptocurrency" style="display:none"></p>
+      <p class="btn subreddit-btn bitcoin" style="display:none"></p>
+      <p class="btn subreddit-btn ethtrader" style="display:none"></p>
+    </div>
     <div class="card comments_card">
       <div class="card-body">
         <h4 class="card-title" style="display:inline-block;">Comments</h4>

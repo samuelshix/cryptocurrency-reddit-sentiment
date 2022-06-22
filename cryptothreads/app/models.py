@@ -33,7 +33,7 @@ class Comment(models.Model):
 
 class TradingDay(models.Model):
     date = models.DateField()
-    crypto_cap = models.IntegerField()
+    crypto_cap = models.BigIntegerField()
     ethereum_price = models.IntegerField()
     bitcoin_price = models.IntegerField()
     # comments = models.ForeignKey(Comment)

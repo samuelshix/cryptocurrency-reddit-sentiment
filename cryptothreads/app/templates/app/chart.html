@@ -2,57 +2,28 @@
 
 {%block scripts%} 
 <script>
-
-
-    function populateComments(submissions, comments) {
-    // var click_date = (new Date(submission.date)).toDateString()
-    var comments_element = document.getElementById("comments");
-    var submission_element = document.getElementById("reddit_thread")
-    var top_comment = document.getElementById("top-comment")
-    var top_comment_text = document.getElementById("top-comment-text")
-    var top_comment_score = document.getElementById("top-comment-score")
-    var top_comment_date = document.getElementById("top-comment-date")
-    top_comment.style.display = 'block'
-    comments_element.innerHTML = ''
-    var date = (new Date(submissions[0].date)).toDateString()
-    submissions.forEach(submission => {
-      subreddit = document.getElementsByClassName(submission.subreddit)[0]
-      subreddit.style.display = 'inline-block'
-      subreddit.innerText = `r/${submission.subreddit}`
-      submission_element.style.display = 'block';
-        subreddit.click(function(){
-          submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission.id)
-        })
-        submission_element.children[0].setAttribute('href', 'https://www.reddit.com/'+ submission.id)
-        submission_element.children[0].innerText = 'View Thread: '+ date
-    });
-    comments.forEach((comment,i) => {
-      if(i===0) {
-        top_comment_text.innerText = comment.text
-        top_comment_score.innerText = comment.score
-        top_comment_date.innerText = date        
-      }
-      var element = document.createElement('div')
-      element.className = `comment_${comment.subreddit}`
-      element.classList.add("card")
-      var comment_score = document.createElement('p')
-      comment_score.innerText = `Score: ${comment.score} | Subreddit: r/${comment.subreddit}`
-      comment_score.style.fontWeight = 500
-      var comment_text = document.createElement('p')
-      comment_text.innerText = comment.text
-      element.appendChild(comment_score)
-      element.appendChild(comment_text)
-      comments_element.appendChild(element)
-    })
-    }
-</script>
-<script>
     // jquery function
     $(document).ready(function(){
         var ctx = document.getElementById("cryptoCap").getContext("2d");
-      
 var myChart = new Chart(ctx, {
   type: 'line',
+  plugins: [{
+          afterDraw: chart => {
+            if (chart.tooltip?._active?.length) {               
+               let x = chart.tooltip._active[0].element.x;             
+               let yAxis = chart.scales.y;
+               let ctx = chart.ctx;
+               ctx.save();
+               ctx.beginPath();
+               ctx.moveTo(x, yAxis.top);
+               ctx.lineTo(x, yAxis.bottom);
+               ctx.lineWidth = 1;
+               ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+               ctx.stroke();
+               ctx.restore();
+            }
+          }
+        }],
   data: {
     // labels: ["2015-03-15T13:03:00Z", "2015-03-25T13:02:00Z", "2015-04-25T14:12:00Z"],
     datasets: [{
@@ -68,7 +39,15 @@ var myChart = new Chart(ctx, {
     }]
   },
   options: {
+    interaction: {
+        intersect: false,
+        mode: 'index',
+    },
     plugins: {
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          },
       tooltip: {
         callbacks: {
           label: function(context) {
@@ -135,75 +114,7 @@ var myChart = new Chart(ctx, {
     }
   }
 });
-
         });
-</script>
-<script>
-  $(document).ready(function(){
-    $('#all').click(function(){
-  const asset = location.pathname.split('/')[2];
-  window.location.href='/chart/'+asset+'/all';
-})
-$('#year').click(function(){
-  const asset = location.pathname.split('/')[2];
-  window.location.href='/chart/'+asset+'/year';
-})
-$('#month').click(function(){
-  const asset = location.pathname.split('/')[2];
-  window.location.href='/chart/'+asset+'/month';
-})
-$('#week').click(function(){
-  const asset = location.pathname.split('/')[2];
-  window.location.href='/chart/'+asset+'/week';
-})
-// $('.cryptocurrency').click(function(){
-//   if(clicked) {
-//     $('#comments').children().show()
-//     clicked = false
-//   } else { 
-//     $('.comment_cryptocurrency').show()
-//     $('.comment_ethtrader').hide()
-//     $('.comment_bitcoin').hide()
-//     clicked = true 
-//   }
-//   $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')
-//   $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
-//   $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
-var flag, flag1, flag2 = false
-$('.cryptocurrency').click(function(){
-  if (flag) {
-  console.log('hi')
-  $('.cryptocurrency').css('background-color','rgba(182, 62, 20, 1)')
-  $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
-  $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
-  $('.comment_cryptocurrency').css('display','block')
-  $('.comment_ethtrader').css('display','none')
-  $('.comment_bitcoin').css('display','none')
-  } else {flag=true}
-})
-$('.bitcoin').click(function(){
-  if (flag1) {
-  $('.bitcoin').css('background-color','rgba(182, 62, 20, 1)')
-  $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
-  $('.ethtrader').css('background-color','rgba(255, 87, 30, 1)')
-  $('.comment_bitcoin').css('display','block')
-  $('.comment_ethtrader').css('display','none')
-  $('.comment_cryptocurrency').css('display','none')
-  } else {flag1=true}
-
-})
-$('.ethtrader').click(function(){
-  if (flag2) {
-  $('.ethtrader').css('background-color','rgba(182, 62, 20, 1)')
-  $('.bitcoin').css('background-color','rgba(255, 87, 30, 1)')
-  $('.cryptocurrency').css('background-color','rgba(255, 87, 30, 1)')
-  $('.comment_ethtrader').css('display','block')
-  $('.comment_cryptocurrency').css('display','none')
-  $('.comment_bitcoin').css('display','none')
-  } else {flag2=true}
-
-})
-  })
 </script>
 {%endblock scripts%}
 {%block content%}
@@ -240,9 +151,18 @@ $('.ethtrader').click(function(){
   </div>
   <div class="col-md-5">
     <div id="subreddits">
-      <p class="btn subreddit-btn cryptocurrency" style="display:none"></p>
-      <p class="btn subreddit-btn bitcoin" style="display:none"></p>
-      <p class="btn subreddit-btn ethtrader" style="display:none"></p>
+      <p class="btn subreddit-btn cryptocurrency" style="display:none"
+      data-toggle="collapse" data-target=".comment_cryptocurrency" area-controls=".comment_cryptocurrency"
+      area-expanded="false"
+      ></p>
+      <p class="btn subreddit-btn bitcoin" style="display:none"
+      data-toggle="collapse" data-target=".comment_bitcoin" area-controls=".comment_bitcoin"
+      area-expanded="false"
+      ></p>
+      <p class="btn subreddit-btn ethtrader" style="display:none"
+      data-toggle="collapse" data-target=".comment_ethtrader" area-controls=".comment_ethtrader"
+      area-expanded="false"
+      ></p>
     </div>
     <div class="card comments_card">
       <div class="card-body">

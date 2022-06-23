@@ -135,10 +135,9 @@ var myChart = new Chart(ctx, {
 </div> -->
 <div class="row">
   <div class="col-md-7">
-    <form action="" method="post">
-      {% csrf_token %}
+    <div class="card chart-card">
     <canvas id="cryptoCap" width="400" height="250"></canvas>
-    </form>
+    </div>
     <div class="card" id="toggleTimeframe">
         <div class="card-body">
             <h5>Timeframes</h5>
@@ -164,6 +163,10 @@ var myChart = new Chart(ctx, {
       area-expanded="false"
       ></p>
       <p class="btn subreddit-btn ethereum" style="display:none"
+      data-toggle="collapse" data-target=".comment_ethereum" area-controls=".comment_ethtrader"
+      area-expanded="false"
+      ></p>
+      <p class="btn subreddit-btn ethfinance" style="display:none"
       data-toggle="collapse" data-target=".comment_ethereum" area-controls=".comment_ethtrader"
       area-expanded="false"
       ></p>

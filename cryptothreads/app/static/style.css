@@ -14,6 +14,9 @@
 .card {
     border-radius: .3em;
 }
+.comments_card, #toggleTimeframe, .chart-card{
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.24) !important;
+}
 .individual_comment_c,.individual_comment_b,.individual_comment_e {
     font-size: .8em;
     max-height: 100px;
@@ -61,7 +64,15 @@
 #subreddits .collapsed {
     background-color: rgba(255, 86, 30, 0.5) !important;
 }
-
+#cryptoCap {
+    z-index: 100;
+    background-color: white;
+}
+.chart-card {
+    border: none;
+    margin-bottom: 1.5em;
+    padding: 1em;
+}
 #reddit_thread a {
     color: white !important;
     text-decoration: none;
@@ -102,15 +113,19 @@
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
 }
+.navbar-brand:hover {
+}
 .navbar-brand p {
     margin-bottom: -.2em;
 }
 .navbar-brand p:nth-child(2) {
-    color: rgba(255, 86, 30, 0.781);
+    color: rgba(255, 86, 30, 0.89);
     margin-bottom: .2em;
+    will-change: text-shadow;
 }
 .navbar-brand p:nth-child(2):hover {
-    color: rgba(255, 86, 30, 0.932);
+    text-shadow: 0 0 10px #fff, #e66800 0 0 2em;
+
 }
 .nav-link {
     font-weight: 500;

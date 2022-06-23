@@ -99,7 +99,7 @@ class Command(BaseCommand):
                     crypto_cap=crypto_cap,
                     bitcoin_price=btc_price.iloc[-1].btc_price,
                     ethereum_price=eth_price.iloc[-1].eth_price)
-        if TradingDay.objects.filter(date = btc_price.iloc[-1].time):
+        if not TradingDay.objects.filter(date = btc_price.iloc[-1].time):
             t.save()
         return t
     # def get_comments(self, date):

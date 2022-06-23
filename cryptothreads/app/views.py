@@ -37,7 +37,6 @@ def timeframe(request, timeframe, asset):
             'submissions': submissions,
             'comments': comments
         }
-        print(data)
         return JsonResponse(data)
     return render(request, url, {
         'qs': trading_days[-index:]
@@ -50,6 +49,7 @@ def date(request):
         asset = request.GET.get('asset')
         date = datetime.utcfromtimestamp(int(float(timestamp))).strftime('%Y-%m-%d')
         submissions = list(Submission.objects.filter(date=date))
+        # print(date)
         comments_arr = []
         submissions_dict_list = []
         if submissions:
@@ -64,7 +64,10 @@ def date(request):
                     submissions_dict_list.append(submission_dict)
                 else:
                     comments = Comment.objects.filter(topic__type=asset,submission=submission)
-                    if comments: submissions_dict_list.append(submission_dict)
+                    if comments: 
+                        submissions_dict_list.append(submission_dict)
+                        print(submission_dict)
+                    else: continue
                 for c in comments:
                     comments_dict = {
                         'text': c.text,
@@ -77,6 +80,7 @@ def date(request):
                 'submissions': submissions_dict_list,
                 'comments': comments_arr,
             }
+            # print(data)
             if len(submissions_dict_list)>0:
                 return JsonResponse(data, status=200)
             else:

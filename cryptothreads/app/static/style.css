@@ -46,13 +46,16 @@
     margin-top: .3em;
     padding: .2em;
 }
+#comments .card {
+    background-color: rgba(255, 86, 30, 0.062);
+}
 #reddit_thread, .btn-special {
     background-color: black;
     display: none;
     width: 100%;
     border: none;
 }
-#reddit_thread:hover, .btn-special:hover, .subreddit-btn {
+.btn-special:hover, .subreddit-btn {
     background-color: rgba(255, 87, 30, 1);
 }
 #subreddits .collapsed {
@@ -89,12 +92,28 @@
     color: white;
     margin-right: .5em;
 }
-.card-body .btn-dark:hover {
-    background-color: rgba(255, 87, 30, 1);
+.subreddit-btn:hover {
+    color:rgba(255, 255, 255, 0.747)
+}
+.card-body .btn-dark:hover, #reddit_thread:hover {
+    background-color: rgba(0, 0, 0, 0.658);
 }
 .navbar-brand {
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
+}
+.navbar-brand p {
+    margin-bottom: -.2em;
+}
+.navbar-brand p:nth-child(2) {
+    color: rgba(255, 86, 30, 0.781);
+    margin-bottom: .2em;
+}
+.navbar-brand p:nth-child(2):hover {
+    color: rgba(255, 86, 30, 0.932);
+}
+.nav-link {
+    font-weight: 500;
 }
 h2 {
     font-weight: 900;

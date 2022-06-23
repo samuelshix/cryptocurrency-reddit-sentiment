@@ -6,8 +6,12 @@ function populateComments(submissions, comments) {
     var top_comment_text = document.getElementById("top-comment-text")
     var top_comment_score = document.getElementById("top-comment-score")
     var top_comment_date = document.getElementById("top-comment-date")
-    // var subreddits = document.getElementById("subreddits")
-    // subreddits.innerHTML = ''
+    var subreddits = document.getElementById("subreddits")
+    subreddits.childNodes.forEach((child, i)=>{
+        if ((i % 2) === 1) {
+            child.style.display = 'none'
+        }
+    })
     top_comment.style.display = 'block'
     comments_element.innerHTML = ''
     var date = (new Date(submissions[0].date)).toDateString()

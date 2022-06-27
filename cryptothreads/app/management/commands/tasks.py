@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
     def update(self, subreddit):
         x = self.api.search_submissions(
-                        title = 'Daily Discussion',
+                        title = 'Discussion',
                         stickied= 'true',
                         subreddit = subreddit,
                         sort = 'desc',
@@ -44,7 +44,7 @@ class Command(BaseCommand):
             print(submission)
             api = self.reddit.submission(i[1].id)
             api.comment_sort = "top"
-            for i in api.comments[0:100]:
+            for i in api.comments[0:10]:
                 print(i)
                 if not Comment.objects.filter(id=i.id):
                     topics = [self.gen_topic]
@@ -116,6 +116,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             self.get_price_data()
-
+            subreddits = ['bitcoin','cryptocurrency', 'ethereum', 'ethtrader', 'ethfinance']
+            for i in subreddits: self.update(i)
         except:
             raise CommandError('An error has occurred.')

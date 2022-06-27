@@ -124,7 +124,7 @@
     will-change: text-shadow;
 }
 .navbar-brand p:nth-child(2):hover {
-    text-shadow: 0 0 10px #fff, #e66800 0 0 2em;
+    text-shadow: #e66800 0 0 2em;
 
 }
 .nav-link {

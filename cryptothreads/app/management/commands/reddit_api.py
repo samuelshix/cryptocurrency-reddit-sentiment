@@ -74,6 +74,7 @@ class Command(BaseCommand):
                         'date': datetime.utcfromtimestamp(top_level_comment.created_utc).strftime('%Y-%m-%d'),
                         'topic': topics
                         }
+                    comment_dict_list.append(comment_dict)
                     # print(comment_dict)
             data.append({
                 'id': i['id'],
@@ -88,7 +89,8 @@ class Command(BaseCommand):
             if not Submission.objects.filter(id=i['id']):
                 submission = Submission(date=i['post_date'], id=i['id'], subreddit=subreddit)
                 submission.save()
-            # submission = Submission.objects.get(id=i['id'])
+            else:
+                submission = Submission.objects.get(id=i['id'])
             for j in i['comments']:
                 if not Comment.objects.filter(id=j['id']):
                     comment = Comment(id=j['id'],text=j['text'], score=j['score'], date=j['date'], submission=submission)

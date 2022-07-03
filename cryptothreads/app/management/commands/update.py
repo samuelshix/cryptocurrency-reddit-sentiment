@@ -13,8 +13,8 @@ class Command(BaseCommand):
 
         self.api = PushshiftAPI()
         self.reddit = praw.Reddit(
-        client_id="3B_hPuLSNInJTsozWMHqcA",
-        client_secret="mMcsjS3apcp-wIxm2mcGNlEaAZsn_A",
+        client_id="CLIENT_ID",
+        client_secret="CLIENT_SECRET",
         user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
         )
 

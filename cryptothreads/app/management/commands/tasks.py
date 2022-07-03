@@ -29,25 +29,25 @@ class Command(BaseCommand):
         url = f'https://api.pushshift.io/reddit/search/submission/?subreddit={subreddit}&title=discussion&stickied=true&after=2d'
         requests.get(url)
         eth = requests.get(url).json()['data']
-        if eth and not Submission.objects.filter(id=eth[0]['id]']):            
-            submission = Submission(id=eth[0]['id'], date=datetime.fromtimestamp(eth[0]['created_utc'].strftime('%Y-%m-%d'), subreddit=subreddit))
-            submission.save()
-            print(submission.id)
-            api = self.reddit.submission(submission.id)
-            api.comment_sort = "top"
-            for i in api.comments[0:10]:
-                if not Comment.objects.filter(id=i.id):
-                    topics = [self.gen_topic]
-                    body_lower = i.body.lower()
-                    if ' eth ' in body_lower or 'ethereum' in body_lower:
-                        topics.append(self.eth_topic)
-                    elif ' btc ' in body_lower or 'bitcoin' in body_lower:
-                        topics.append(self.btc_topic)
-                    c = Comment(id=i.id,text=i.body, score=i.score, 
-                    date=datetime.utcfromtimestamp(i.created_utc).strftime('%Y-%m-%d'),
-                    submission=submission)
-                    c.save()
-                    c.topic.add(*topics)
+        if eth: 
+            if Submission.objects.filter(id=eth[0]['id]']):            
+                submission = Submission(id=eth[0]['id'], date=datetime.fromtimestamp(eth[0]['created_utc'].strftime('%Y-%m-%d'), subreddit=subreddit))
+                submission.save()
+                api = self.reddit.submission(submission.id)
+                api.comment_sort = "top"
+                for i in api.comments[0:10]:
+                    if not Comment.objects.filter(id=i.id):
+                        topics = [self.gen_topic]
+                        body_lower = i.body.lower()
+                        if ' eth ' in body_lower or 'ethereum' in body_lower:
+                            topics.append(self.eth_topic)
+                        elif ' btc ' in body_lower or 'bitcoin' in body_lower:
+                            topics.append(self.btc_topic)
+                        c = Comment(id=i.id,text=i.body, score=i.score, 
+                        date=datetime.utcfromtimestamp(i.created_utc).strftime('%Y-%m-%d'),
+                        submission=submission)
+                        c.save()
+                        c.topic.add(*topics)
         return eth
 
     def update_eth(self):

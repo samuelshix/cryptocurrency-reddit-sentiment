@@ -4,3 +4,7 @@
 db.sqlite3
 *.pyc
 venvs/
+bin
+include
+lib
+pyvenv.cfg

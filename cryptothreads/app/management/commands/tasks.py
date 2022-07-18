@@ -7,15 +7,15 @@ import datetime as dt
 from app.models import Submission, Comment, Topic, TradingDay
 from django.core.management.base import BaseCommand, CommandError
 import requests
-
+import os
 class Command(BaseCommand):
     def __init__(self):
         super(Command, self).__init__()
         self.api = PushshiftAPI()
         self.reddit = praw.Reddit(
-        client_id="3B_hPuLSNInJTsozWMHqcA",
-        client_secret="mMcsjS3apcp-wIxm2mcGNlEaAZsn_A",
-        user_agent="web:crypto-comment-sentiment:v1.0.0 (by /u/kash_sam_)",
+        client_id=os.getenv("CLIENT_ID"),
+        client_secret=os.getenv("CLIENT_SECRET"),
+        user_agent=os.getenv("USER_AGENT"),
         )
         today = dt.datetime.now()
         d = dt.timedelta(days = 2)

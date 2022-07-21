@@ -42,14 +42,14 @@ def timeframe(request, timeframe, asset):
         'qs': trading_days[-index:]
     })    
 
-# ajax view returns comments and submissions given a get request's timestamp
+# AJAX view returns comments and submissions given a get request's timestamp
 def date(request):
     if request.method == 'GET':
+        # Get URL params
         timestamp = request.GET.get('timestamp')
         asset = request.GET.get('asset')
         date = datetime.utcfromtimestamp(int(float(timestamp))).strftime('%Y-%m-%d')
         submissions = list(Submission.objects.filter(date=date))
-        # print(date)
         comments_arr = []
         submissions_dict_list = []
         if submissions:
@@ -80,7 +80,6 @@ def date(request):
                 'submissions': submissions_dict_list,
                 'comments': comments_arr,
             }
-            # print(data)
             if len(submissions_dict_list)>0:
                 return JsonResponse(data, status=200)
             else:
@@ -91,7 +90,7 @@ def index(request,asset='total'):
         'qs': list(TradingDay.objects.all()[800:]),
     })
 
-# redirect users on base url to specified url
+# Redirect users on base url to specified url
 class LoginRedirectView(RedirectView):
     pattern_name = 'redirect'
     def get_redirect_url(self, *args, **kwargs):

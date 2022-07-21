@@ -1,19 +1,18 @@
-import praw
-from pmaw import PushshiftAPI
 import pandas as pd
-from datetime import datetime
-
-from app.models import TradingDay, Comment
+from app.models import TradingDay
 from django.core.management.base import BaseCommand, CommandError
-import requests, os
+import requests
 
+# Django Command class for custom manage.py commands
 class Command(BaseCommand):
 
+    # Populate database with initial cryptocurrency market cap data from local CSV and create Dataframe for processing
     def get_total_cap_data(self):
         total_data = pd.read_csv('./app/data/CRYPTOCAP_TOTAL.csv')
         total_data["time"]= pd.to_datetime(total_data['time'],unit='s').apply(lambda x: str(x)[:10])
         return total_data
 
+    # Populate database with ETH and BTC price data from coingecko API and create Dataframe for processing
     def get_price_data(self):
         btc_data = requests.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=max').json()['prices']
         btc_price = pd.DataFrame(data=btc_data, columns=['time','btc_price'])
@@ -23,9 +22,9 @@ class Command(BaseCommand):
         eth_price = pd.DataFrame(data=eth_data, columns=['time','eth_price'])
         eth_price["time"]= eth_price["time"].apply(pd.to_datetime, unit='ms').apply(lambda x: str(x)[:10])
         eth_price = eth_price.drop_duplicates(subset=['time'])
-
         return (btc_price, eth_price)
     
+    # Combine dataframes from get_total_cap_data and get_price_data to create one Dataframe
     def aggregate_data(self):
         total_data = self.get_total_cap_data()
         data_tuple = self.get_price_data()
@@ -34,6 +33,7 @@ class Command(BaseCommand):
         total_df = total_df.merge(eth_price, how='inner', on='time').sort_values(by='time', axis=0)
         return total_df
     
+    # Create TradingDay model instances for each row in the Dataframe and save to database
     def add_data(self):
         total_df = self.aggregate_data()
         print(total_df)

@@ -1,43 +1,59 @@
 * {
     transition: .3s;
 }
-.navbar{
+
+.navbar {
     padding-left: 1em;
     padding-right: 1em;
     margin-bottom: 2em;
 }
+
 .row {
     margin-top: 2em;
     margin-left: 1em;
     margin-right: 1em;
 }
+
 .card {
     border-radius: .3em;
 }
-.comments_card, #toggleTimeframe, .chart-card{
+
+.comments_card,
+#toggleTimeframe,
+.chart-card {
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.24) !important;
 }
-.individual_comment_c,.individual_comment_b,.individual_comment_e {
+
+.individual_comment_c,
+.individual_comment_b,
+.individual_comment_e {
     font-size: .8em;
     max-height: 100px;
     overflow-y: auto;
 }
-.individual_comment_c.card,.individual_comment_b.card,.individual_comment_e.card {
+
+.individual_comment_c.card,
+.individual_comment_b.card,
+.individual_comment_e.card {
     padding: .3em;
     margin-top: .5em;
 }
+
 .individual_comment p {
     margin-bottom: .5rem;
 }
+
 .comments_card {
     height: 60vh;
     overflow-y: scroll;
     padding: 0;
 }
+
 .card .card-title {
     margin-top: .5rem;
     /* padding: 0em; */
 }
+
 .comments_date {
     background-color: black;
     font-size: .8em;
@@ -45,44 +61,57 @@
     color: white;
     padding: 0 .2em;
 }
+
 #comments * {
     margin-top: .3em;
     padding: .2em;
 }
+
 #comments .card {
     background-color: rgba(255, 86, 30, 0.062);
 }
-#reddit_thread, .btn-special {
+
+#reddit_thread,
+.btn-special {
     background-color: black;
     display: none;
     width: 100%;
     border: none;
 }
-.btn-special:hover, .subreddit-btn {
+
+.btn-special:hover,
+.subreddit-btn {
     background-color: rgba(255, 87, 30, 1);
 }
+
 #subreddits .collapsed {
     background-color: rgba(255, 86, 30, 0.5) !important;
 }
+
 #cryptoCap {
     z-index: 100;
     background-color: white;
 }
+
 .chart-card {
     border: none;
     margin-bottom: 1.5em;
     padding: 1em;
 }
+
 #reddit_thread a {
     color: white !important;
     text-decoration: none;
 }
+
 #top-comment {
     display: none;
 }
+
 #top-comment .card {
     background: rgba(255, 64, 0, 0.062);
 }
+
 #top-comment .card .card {
     padding: 1em;
     background: black;
@@ -92,45 +121,61 @@
     overflow-y: auto;
     font-weight: 200;
 }
+
 #toggleTimeframe .btn-dark {
-    width: 24%;
+    width: 25%;
 }
+
+#toggleTimeframe .card-body {
+    margin-bottom: 1.5em;
+}
+
 .btn-secondary {
     margin-right: 1em;
 }
+
 .subreddit-btn {
     font-weight: 600;
     color: white;
     margin-right: .5em;
 }
+
 .subreddit-btn:hover {
-    color:rgba(255, 255, 255, 0.747)
+    color: rgba(255, 255, 255, 0.747)
 }
-.card-body .btn-dark:hover, #reddit_thread:hover {
+
+.card-body .btn-dark:hover,
+#reddit_thread:hover {
     background-color: rgba(0, 0, 0, 0.658);
 }
+
 .navbar-brand {
     font-family: 'Playfair Display', serif;
     font-size: 1.5rem;
 }
-.navbar-brand:hover {
-}
+
 .navbar-brand p {
     margin-bottom: -.2em;
 }
+
 .navbar-brand p:nth-child(2) {
     color: rgba(255, 86, 30, 0.89);
     margin-bottom: .2em;
     will-change: text-shadow;
 }
+
 .navbar-brand p:nth-child(2):hover {
     text-shadow: #e66800 0 0 2em;
 
 }
+
 .nav-link {
     font-weight: 500;
+    font-size: larger;
 }
+
 h2 {
     font-weight: 200;
+    font-size: larger;
     margin: 2em auto;
 }

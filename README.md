@@ -6,8 +6,8 @@ Created with Django, ChartJS, JS and jQuery
 Clone the repository:
 
 ```sh
-$ git clone https://github.com/gocardless/sample-django-app.git
-$ cd sample-django-app
+$ git clone https://github.com/samuelshix/cryptocurrency-reddit-sentiment
+$ cd cryptocurrency-reddit-sentiment
 ```
 Then install the dependencies:
 

@@ -106,6 +106,7 @@
 
 #top-comment {
     display: none;
+    margin-bottom: 5em;
 }
 
 #top-comment .card {

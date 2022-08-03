@@ -1,7 +1,3 @@
-import praw
-from pmaw import PushshiftAPI
-import pandas as pd
-from datetime import datetime
 import datetime as dt
 from app.models import Tweet, Topic
 from django.core.management.base import BaseCommand, CommandError
@@ -17,6 +13,9 @@ class Command(BaseCommand):
         # self.user_agent = os.environ.get("TWITTER_USER_AGENT")
         # Method required by bearer token authentication.
 
+    def n_days_ago(self, days):
+        return dt.datetime.now() - dt.timedelta(days=days)
+
     def bearer_oauth(self, r):
         r.headers[
             "Authorization"
@@ -30,79 +29,70 @@ class Command(BaseCommand):
             raise Exception(response.status_code, response.text)
         return response.json()
 
-    def generate_query(self, topic):
-        if topic == "btc":
-            return {
-                "query": "(btc OR bitcoin) -giveaway",
-                "tweet.fields": "public_metrics,created_at",
-                "max_results": 100,
-                "sort_order": "relevancy",
-            }
-        elif topic == "eth":
-            return {
-                "query": "(eth OR ethereum) -giveaway",
-                "tweet.fields": "public_metrics,created_at",
-                "max_results": 100,
-                "sort_order": "relevancy",
-            }
-        else:
-            return {
-                "query": "(crypto OR cryptocurrency OR blockchain) -giveaway",
-                "tweet.fields": "public_metrics,created_at",
-                "max_results": 100,
-                "sort_order": "relevancy",
-            }
+    def generate_query(self, topic, days):
+        print(f"Days ago: {days}")
+        formatted_date = self.n_days_ago(days)
+        query_mapping = {
+            "btc": "(btc OR bitcoin) -giveaway",
+            "eth": "(eth OR ethereum) -giveaway",
+            "gen": "(crypto OR cryptocurrency OR blockchain) -giveaway",
+        }
+        query = {
+            "q": query_mapping[topic],
+            "count": "100",
+            "result_type": "popular",
+            "until": str(formatted_date)[0:11],
+        }
+        return query
 
-    def paginate(self, topic, next_token=None):
-        # print(2)
-        if not next_token:
-            search_url = "https://api.twitter.com/2/tweets/search/recent"
-        else:
-            search_url = (
-                "https://api.twitter.com/2/tweets/search/recent?pagination_token="
-                + next_token
-            )
-        query_params = self.generate_query(topic)
-        # print(3)
-        json_response = self.connect_to_endpoint(search_url, query_params)
-        # print(4)
-        return json_response
-
-    def gather_tweets(self, topic, num_tweets):
-        response = self.paginate(topic)
-        tweets = response["data"]
-        next_token = response["meta"]["next_token"]
-        while len(tweets) <= num_tweets:
-            response = self.paginate(topic, next_token)
-            next_token = response["meta"]["next_token"]
-            for i in response["data"]:
-                if i["public_metrics"]["like_count"] > 100:
-                    tweets.append(i)
+    def gather_tweets(self, topic, days):
+        search_url = "https://api.twitter.com/1.1/search/tweets.json"
+        query_params = self.generate_query(topic, days)
+        response = self.connect_to_endpoint(search_url, query_params)
+        tweets = response["statuses"]
         return tweets
 
-    def save_tweets(self, topic):
-        tweets = self.gather_tweets(topic, 200)
+    def save_tweets(self, topic, days):
+        tweets = self.gather_tweets(topic, days)
+        topic_obj = Topic.objects.filter(type=topic)[0]
+        print(f"Number of tweets found: {len(tweets)}")
         for tweet in tweets:
-            if not Tweet.objects.filter(tweet_id=tweet["id"]):
+            if not Tweet.objects.filter(id=tweet["id"]):
                 new_tweet = Tweet(
                     id=tweet["id"],
-                    date=datetime.strptime(tweet["created_at"][:-14], "%Y-%m-%d"),
-                    topic=Topic.objects.filter(type=topic),
-                    likes=tweet["public_metrics"]["like_count"],
-                    retweets=tweet["public_metrics"]["retweet_count"],
+                    date=dt.datetime.strptime(
+                        tweet["created_at"], "%a %b %d %H:%M:%S %z %Y"
+                    ),
+                    likes=tweet["favorite_count"],
+                    retweets=tweet["retweet_count"],
                     text=tweet["text"],
                 )
                 new_tweet.save()
+                new_tweet.topic.add(topic_obj)
             else:
-                print("Tweet already exists")
+                new_tweet = Tweet.objects.filter(id=tweet["id"])[0]
+                if topic_obj not in new_tweet.topic.all():
+                    new_tweet.topic.add(topic_obj)
+
+    def save_last_week_tweets(self):
+        for i in range(1, 8):
+            self.save_tweets("btc", i)
+            self.save_tweets("eth", i)
+            self.save_tweets("gen", i)
+
+    def save_yesterday_tweets(self):
+        self.save_tweets("btc", 1)
+        self.save_tweets("eth", 1)
+        self.save_tweets("gen", 1)
+        self.save_tweets("btc", 0)
+        self.save_tweets("eth", 0)
+        self.save_tweets("gen", 0)
 
     # Run the script for list of subreddits
     def handle(self, *args, **options):
         try:
-            self.gather_tweets("btc", 200)
-            self.gather_tweets("eth", 200)
-            self.gather_tweets("gen", 200)
-
+            # self.save_last_week_tweets()
+            self.save_yesterday_tweets()
             print("Success!")
         except:
             raise CommandError("An error has occurred.")

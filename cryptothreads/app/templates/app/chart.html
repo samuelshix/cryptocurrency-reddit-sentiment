@@ -104,6 +104,7 @@ var myChart = new Chart(ctx, {
           },
           success: function(data) {
             populateComments(data.submissions,data.comments)
+            populateTweets(data.tweets)
             console.log(data.submissions)
           },
           error: function() {
@@ -147,8 +148,24 @@ var myChart = new Chart(ctx, {
             <button class="btn btn-dark tf" id="week">Week</button>
         </div>
     </div>
+    <h1 class="current-date"></h1>
+
   </div>
-  <div class="col-md-5">
+ <div class="col-md-5">
+  <div class="card" id="social-media-title">
+    <h3><b>Toggle Platform</b></h3>
+    <div class="card-title">
+      <h4 id="reddit">Reddit</h4>
+    <label onclick=togglePlatform() class="switch">
+      <input type="checkbox">
+      <span class="slider"></span>
+    </label>
+    <h4 id="twitter">Twitter</h4>
+  </div>
+  </div>
+  <div class="card comments_card">
+    <div class="card-body">
+    <h1>Comments:</h1>
     <div id="subreddits">
       <p class="btn subreddit-btn cryptocurrency" style="display:none"
       data-toggle="collapse" data-target=".comment_cryptocurrency" area-controls=".comment_cryptocurrency"
@@ -171,20 +188,25 @@ var myChart = new Chart(ctx, {
       area-expanded="false"
       ></p>
     </div>
-    <div class="card comments_card">
-      <div class="card-body">
-        <h4 class="card-title" style="display:inline-block;">Comments</h4>
         <button class="btn btn-primary" id="reddit_thread"><a target="_blank" href="">View Thread</a></button>
         <div id="comments">
           <p>Click on the chart to view comments!</p>
         </div>
       </div>
+      </div>
+      <div class="card tweets_card">
+        <h1>Tweets:</h1>
+
+        <div class="card-body">
+
+          </div>
+          </div>
     </div>
   </div>
 </div> 
 <div class="row" id="top-comment">
   <div class="card">
-    <h3 class="card-title">Top Comment</h3>
+    <h3 class="card-title">Top Reddit Comment</h3>
     <p>Score: <b id="top-comment-score"></b> | Date: <b id="top-comment-date"></b></p>
 
     <div class="card">

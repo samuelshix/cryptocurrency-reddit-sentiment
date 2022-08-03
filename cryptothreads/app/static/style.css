@@ -140,6 +140,12 @@ b {
     padding: 1em;
 }
 
+.current-date {
+    margin-top: .5em;
+    font-size: 3em;
+    font-weight: 700;
+}
+
 #reddit_thread a {
     color: white !important;
     text-decoration: none;
@@ -290,8 +296,6 @@ input:checked+.slider:before {
     display: inline-block;
     margin-top: .5em;
     position: relative;
-    top: .3em;
-
 }
 
 .card#social-media-title {
@@ -301,7 +305,7 @@ input:checked+.slider:before {
     background: white !important;
     justify-content: center;
     height: auto;
-    width: 80%;
+    /* width: 80%; */
     z-index: 999;
     padding: 1em;
 }
@@ -309,6 +313,9 @@ input:checked+.slider:before {
 #social-media-title .card-title {
     margin: auto;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #reddit {

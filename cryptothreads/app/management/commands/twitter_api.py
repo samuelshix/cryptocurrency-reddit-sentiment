@@ -17,9 +17,7 @@ class Command(BaseCommand):
         return dt.datetime.now() - dt.timedelta(days=days)
 
     def bearer_oauth(self, r):
-        r.headers[
-            "Authorization"
-        ] = f"Bearer AAAAAAAAAAAAAAAAAAAAAH9vdgEAAAAA3HOPmlZsRmcW6nfSCOx9cCgscLc%3DPU9hTkTbmFfzA2hAzKA6CGQWmuzLZ3k6alGkrXOzrSQo4lvLvL"
+        r.headers["Authorization"] = f"Bearer {os.environ.get('TWITTER_TOKEN')}"
         r.headers["User-Agent"] = "v2RecentSearchPython"
         return r
 

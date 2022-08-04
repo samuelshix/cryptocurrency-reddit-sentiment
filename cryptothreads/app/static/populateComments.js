@@ -1,10 +1,10 @@
 function populateComments(submissions, comments) {
-  var comments_element = document.getElementById("comments");
-  var submission_element = document.getElementById("reddit_thread")
-  var top_comment = document.getElementById("top-comment")
-  var top_comment_text = document.getElementById("top-comment-text")
-  var top_comment_score = document.getElementById("top-comment-score")
-  var top_comment_date = document.getElementById("top-comment-date")
+  var commentsElement = document.getElementById("comments");
+  var submissionElement = document.getElementById("reddit_thread")
+  var topComment = document.getElementById("top-comment")
+  var topCommentText = document.getElementById("top-comment-text")
+  var topCommentScore = document.getElementById("top-comment-score")
+  var topCommentDate = document.getElementById("top-comment-date")
   var subreddits = document.getElementById("subreddits")
   var socialTitle = document.getElementById("social-media-title")
   socialTitle.style.display = "block"
@@ -13,80 +13,87 @@ function populateComments(submissions, comments) {
       child.style.display = 'none'
     }
   })
-  top_comment.style.display = 'block'
-  comments_element.innerHTML = ''
+  topComment.style.display = 'block'
+  commentsElement.innerHTML = ''
   var date = (new Date(submissions[0].date)).toDateString()
   submissions.forEach(submission => {
     subreddit = document.getElementsByClassName(submission.subreddit)[0]
     subreddit.style.display = 'inline-block'
     subreddit.innerText = `r/${submission.subreddit}`
-    submission_element.style.display = 'block';
+    submissionElement.style.display = 'block';
     subreddit.click(function () {
-      submission_element.children[0].setAttribute('href', 'https://www.reddit.com/' + submission.id)
+      submissionElement.children[0].setAttribute('href', 'https://www.reddit.com/' + submission.id)
     })
-    submission_element.children[0].setAttribute('href', 'https://www.reddit.com/' + submission.id)
-    submission_element.children[0].innerText = 'View Thread: ' + date
+    submissionElement.children[0].setAttribute('href', 'https://www.reddit.com/' + submission.id)
+    submissionElement.children[0].innerText = 'View Thread: ' + date
   });
   comments.forEach((comment, i) => {
     if (i === 0) {
-      top_comment_text.innerText = comment.text
-      top_comment_score.innerText = comment.score
-      top_comment_date.innerText = date
+      topCommentText.innerText = comment.text
+      topCommentScore.innerText = comment.score
+      topCommentDate.innerText = date
     }
     var element = document.createElement('div')
     element.className = `comment_${comment.subreddit} collapse show`
     element.classList.add("card")
-    var comment_score = document.createElement('p')
-    comment_score.innerText = `Score: ${comment.score} | Subreddit: r/${comment.subreddit}`
-    comment_score.style.fontWeight = 500
-    var comment_text = document.createElement('p')
-    comment_text.innerText = comment.text
-    element.appendChild(comment_score)
-    element.appendChild(comment_text)
-    comments_element.appendChild(element)
+    var commentScore = document.createElement('p')
+    commentScore.innerText = `Score: ${comment.score} | Subreddit: r/${comment.subreddit}`
+    commentScore.style.fontWeight = 500
+    var commentText = document.createElement('p')
+    commentText.innerText = comment.text
+    element.appendChild(commentScore)
+    element.appendChild(commentText)
+    commentsElement.appendChild(element)
+    const dateEle = document.getElementsByClassName("current-date")[0]
+    dateEle.innerText = date
   })
+
 }
 function populateTweets(tweets) {
-  var tweets_element = document.querySelector(".tweets_card .card-body");
-  tweets_element.innerHTML = ''
-  if (tweets.length === 0) { tweets_element.innerHTML = "Tweets are only available from 7/25/2022 and onward due to API constraints." }
+  var tweetsElement = document.querySelector(".tweets_card .card-body");
+  tweetsElement.innerHTML = ''
+  if (tweets.length === 0) {
+    const error = document.createElement('p')
+    error.innerText = "Tweets are only available from 7/25/2022 and onward due to API constraints."
+    tweetsElement.appendChild(error)
+  }
   tweets.forEach(tweet => {
-    var tweet_link = document.createElement('a')
-    tweet_link.href = `https://twitter.com/u/status/${tweet.id}`
-    tweet_link.target = "_blank"
-    var tweet_element = document.createElement('div')
-    var tweet_text = document.createElement('p')
-    tweet_text.innerText = tweet.text
+    var tweetLink = document.createElement('a')
+    tweetLink.href = `https://twitter.com/u/status/${tweet.id}`
+    tweetLink.target = "_blank"
+    var tweetEle = document.createElement('div')
+    var tweetText = document.createElement('p')
+    tweetText.innerText = tweet.text
     var tweet_retweets = document.createElement('p')
     tweet_retweets.innerText = `Likes: ${tweet.likes} | Retweets: ${tweet.retweets}`
-    tweet_element.classList.add("card")
-    tweet_element.appendChild(tweet_retweets)
-    tweet_element.appendChild(tweet_text)
-    tweet_link.appendChild(tweet_element)
-    tweets_element.appendChild(tweet_link)
+    tweetEle.classList.add("card")
+    tweetEle.appendChild(tweet_retweets)
+    tweetEle.appendChild(tweetText)
+    tweetLink.appendChild(tweetEle)
+    tweetsElement.appendChild(tweetLink)
   })
 }
 
 function togglePlatform() {
   const inputs = document.getElementsByTagName("input");
-  const reddit_comments = document.getElementsByClassName("comments_card")[0]
+  const redditComments = document.getElementsByClassName("comments_card")[0]
   const tweets = document.getElementsByClassName("tweets_card")[0]
-  const reddit_label = document.getElementById("reddit")
-  const twitter_label = document.getElementById("twitter")
-  console.log(reddit_label)
+  const redditLabel = document.getElementById("reddit")
+  const twitterLabel = document.getElementById("twitter")
+  console.log(redditLabel)
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].type === 'checkbox') {
       const toggle = inputs[i]
       if (toggle.checked) {
-        reddit_comments.style.display = 'none'
+        redditComments.style.display = 'none'
         tweets.style.display = "block"
-        reddit_label.style.color = "black"
-        twitter_label.style.color = "rgb(88, 194, 255)"
+        redditLabel.style.color = "black"
+        twitterLabel.style.color = "rgb(88, 194, 255)"
       } else {
-        reddit_comments.style.display = 'block'
+        redditComments.style.display = 'block'
         tweets.style.display = "none"
-        reddit_label.style.color = "rgba(255, 87, 30, 1)"
-        twitter_label.style.color = "black"
+        redditLabel.style.color = "rgba(255, 87, 30, 1)"
+        twitterLabel.style.color = "black"
       }
     }
   }

@@ -49,12 +49,21 @@ function populateComments(submissions, comments) {
   })
 
 }
+let disabled;
 function populateTweets(tweets) {
   var tweetsElement = document.querySelector(".tweets_card .card-body");
   tweetsElement.innerHTML = ''
   if (tweets.length === 0) {
+    disabled = true
     const error = document.createElement('p')
+    const twitterLabel = document.getElementById("twitter")
+    const switchToggle = document.getElementById("switchInput")
+    const infoPopup = document.getElementsByClassName("popup")[0]
+    infoPopup.style.display = "block"
+    switchToggle.setAttribute('disabled', 'disabled')
+    twitterLabel.style.color = "lightgrey"
     error.innerText = "Tweets are only available from 7/25/2022 and onward due to API constraints."
+
     tweetsElement.appendChild(error)
   }
   tweets.forEach(tweet => {
@@ -93,8 +102,13 @@ function togglePlatform() {
         redditComments.style.display = 'block'
         tweets.style.display = "none"
         redditLabel.style.color = "rgba(255, 87, 30, 1)"
-        twitterLabel.style.color = "black"
+        twitterLabel.style.color = disabled ? "lightgrey" : "black"
       }
     }
   }
+}
+
+function displayInfo() {
+  var popup = document.getElementById("myPopup");
+  popup.classList.toggle("show");
 }

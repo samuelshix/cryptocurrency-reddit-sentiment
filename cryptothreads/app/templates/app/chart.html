@@ -157,10 +157,14 @@ var myChart = new Chart(ctx, {
     <div class="card-title">
       <h4 id="reddit">Reddit</h4>
     <label onclick=togglePlatform() class="switch">
-      <input type="checkbox">
+      <input type="checkbox" id="switchInput">
       <span class="slider"></span>
     </label>
     <h4 id="twitter">Twitter</h4>
+
+    <i class="popup icon-info-sign" onclick="displayInfo()">
+      <span class="popuptext" id="myPopup">Tweets are only available from 7/25/2022 and onward due to API constraints.</span>
+    </i>
   </div>
   </div>
   <div class="card comments_card">

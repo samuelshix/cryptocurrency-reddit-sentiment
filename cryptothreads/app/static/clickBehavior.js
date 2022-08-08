@@ -16,3 +16,4 @@ $(document).ready(function () {
         window.location.href = '/chart/' + asset + '/week';
     })
 })
+

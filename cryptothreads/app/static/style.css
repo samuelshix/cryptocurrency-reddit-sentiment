@@ -409,3 +409,18 @@ input:checked+.slider:before {
         font-size: .8em;
     }
 }
+
+.company {
+    border-radius: 1em 1em 0 0;
+    padding: 1em;
+    text-align: center;
+}
+
+.company a {
+    color: white;
+    text-decoration: none;
+}
+
+.company a:hover {
+    color: rgb(252, 208, 182);
+}

@@ -94,24 +94,7 @@ var myChart = new Chart(ctx, {
         const canvasPosition = Chart.helpers.getRelativePosition(e, myChart);
         const dataX = myChart.scales.x.getValueForPixel(canvasPosition.x)/1000;
         var click_date = (new Date(dataX)).toDateString()
-        var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-        $.ajax({
-          type: 'GET',
-          url: '/get/comment-data/',
-          data: {
-            'asset': location.pathname.split('/')[2],
-            'timestamp': dataX
-          },
-          success: function(data) {
-            populateComments(data.submissions,data.comments)
-            populateTweets(data.tweets)
-            console.log(data.submissions)
-          },
-          error: function() {
-            alert("Error: Missing thread for date, choose a different date.")
-          },
-
-        })
+        requestComments(dataX)
     }
   }
 });
@@ -121,25 +104,25 @@ var myChart = new Chart(ctx, {
 {%block content%}
 {%block title%}
 {%endblock%}
-<!-- <div class="row justify-content-center">
-    <div class="col-md-5">
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#toggleTimeframe" aria-expanded="false" aria-controls="toggleTimeframe">Timeframe</button>
-        <div class="card collapse" id="toggleTimeframe">
-            <div class="card-body">
-                <button class="btn btn-primary">All</button>
-                <button class="btn btn-primary">1Y</button>
-                <button class="btn btn-primary">1M</button>
-                <button class="btn btn-primary">1W</button>
-            </div>
-        </div>
-    </div>
-</div> -->
 <div class="row">
   <div class="col-md-7">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="current-date"></h1>
+        <h4 class="choose-date-header">Click the chart below, or choose a date here:</h4>
+        <form id="date-form">
+          <input class="bg-dark date-input" type="date" id="start" name="trip-start"
+          value="2018-07-22"
+          min="2017-10-19" max="today">
+          <!-- submit form button -->
+          <button type="submit" class="btn date-form-btn">Submit</button>
+        </form>
+      </div>
+    </div>
     <div class="card chart-card">
     <canvas id="cryptoCap" width="400" height="250"></canvas>
-    </div>
-    <div class="card" id="toggleTimeframe">
+    
+    <div id="toggleTimeframe">
         <div class="card-body">
             <h5>Timeframes</h5>
             <button class="btn btn-dark tf" id="all">All</button>
@@ -148,7 +131,7 @@ var myChart = new Chart(ctx, {
             <button class="btn btn-dark tf" id="week">Week</button>
         </div>
     </div>
-    <h1 class="current-date"></h1>
+  </div>
 
   </div>
  <div class="col-md-5">

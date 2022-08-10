@@ -24,7 +24,9 @@ class Command(BaseCommand):
     def connect_to_endpoint(self, url, params):
         response = requests.get(url, auth=self.bearer_oauth, params=params)
         if response.status_code != 200:
+            print("Error: " + str(response.status_code))
             raise Exception(response.status_code, response.text)
+        print("Connected to endpoint!")
         return response.json()
 
     def generate_query(self, topic, days):
@@ -73,7 +75,7 @@ class Command(BaseCommand):
                     new_tweet.topic.add(topic_obj)
 
     def save_last_week_tweets(self):
-        for i in range(1, 8):
+        for i in range(0, 7):
             self.save_tweets("btc", i)
             self.save_tweets("eth", i)
             self.save_tweets("gen", i)

@@ -51,6 +51,7 @@ function populateComments(submissions, comments) {
 }
 let disabled;
 function populateTweets(tweets) {
+  // console.log(tweets)
   var tweetsElement = document.querySelector(".tweets_card .card-body");
   tweetsElement.innerHTML = ''
   if (tweets.length === 0) {
@@ -89,20 +90,19 @@ function togglePlatform() {
   const tweets = document.getElementsByClassName("tweets_card")[0]
   const redditLabel = document.getElementById("reddit")
   const twitterLabel = document.getElementById("twitter")
-  console.log(redditLabel)
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].type === 'checkbox') {
       const toggle = inputs[i]
-      if (toggle.checked) {
-        redditComments.style.display = 'none'
-        tweets.style.display = "block"
-        redditLabel.style.color = "black"
-        twitterLabel.style.color = "rgb(88, 194, 255)"
-      } else {
+      if (!toggle.checked) {
         redditComments.style.display = 'block'
         tweets.style.display = "none"
         redditLabel.style.color = "rgba(255, 87, 30, 1)"
         twitterLabel.style.color = disabled ? "lightgrey" : "black"
+      } else {
+        redditComments.style.display = 'none'
+        tweets.style.display = "block"
+        redditLabel.style.color = "black"
+        twitterLabel.style.color = "rgb(88, 194, 255)"
       }
     }
   }

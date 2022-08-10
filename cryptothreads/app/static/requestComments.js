@@ -11,7 +11,6 @@ function requestComments(timestamp) {
         success: function (data) {
             populateComments(data.submissions, data.comments)
             populateTweets(data.tweets)
-            console.log(data.submissions)
         },
         error: function () {
             alert("Error: Missing thread for date, choose a different date.")

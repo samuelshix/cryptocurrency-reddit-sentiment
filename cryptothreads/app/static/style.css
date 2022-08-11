@@ -149,12 +149,27 @@ h1 {
     background-color: black;
 }
 
-.card:hover {
-    transform: scale(1.03)
+.chart-card canvas:hover {
+    transform: scale(1.02);
+    cursor: pointer;
 }
 
-.current-date {
-    font-size: 3em;
+h1 {
+    font-weight: 700;
+    /* space title with 3em */
+    /* make text bigger */
+    font-size: 2.5em;
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+}
+
+h2 {
+    margin-bottom: .5em !important;
+}
+
+.current-date,
+h3 {
+    font-size: 1.5em;
     font-weight: 700;
 }
 
@@ -194,7 +209,7 @@ h1 {
     margin-bottom: 1em;
 }
 
-.card input {
+.date-card input {
     font-family: 'Sora';
     color: rgb(255, 255, 255);
     border: none;
@@ -203,15 +218,17 @@ h1 {
     display: inline-block;
 }
 
-.bg-dark:hover {
-    background-color: rgba(0, 0, 0, 0.815) !important;
-}
 
 ::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
-.date-form-btn {
+.date-form .bg-dark:hover {
+    background-color: rgba(0, 0, 0, 0.815) !important;
+}
+
+.date-form-btn,
+.subreddit-btn {
     background-color: rgba(255, 86, 30, 1);
     border: none;
     padding: .5em;
@@ -219,7 +236,8 @@ h1 {
     color: white;
 }
 
-.date-form-btn:hover {
+.date-form-btn:hover,
+.subreddit-btn:hover {
     background-color: rgba(255, 86, 30, 0.842);
 }
 
@@ -228,13 +246,7 @@ h1 {
 }
 
 .subreddit-btn {
-    font-weight: 600;
-    color: white;
     margin-right: .5em;
-}
-
-.subreddit-btn:hover {
-    color: rgba(255, 255, 255, 0.747)
 }
 
 .card-body .btn-dark:hover,
@@ -380,12 +392,13 @@ input:checked+.slider:before {
     display: none;
 }
 
-.fa-github {
+.fa-brands {
     color: grey;
     font-size: 1.5em;
+    margin-right: .5em;
 }
 
-.fa-github:hover {
+.fa-brands:hover {
     color: white;
 }
 
@@ -457,12 +470,17 @@ input:checked+.slider:before {
         width: 23%;
         font-size: .8em;
     }
+
+    #toggleTimeframe .card-body {
+        padding: 0;
+    }
 }
 
 .company {
     border-radius: 1em 1em 0 0;
     padding: 1em;
     text-align: center;
+    margin-top: 7em;
 }
 
 .company a {
@@ -471,5 +489,11 @@ input:checked+.slider:before {
 }
 
 .company a:hover {
-    color: rgb(252, 208, 182);
+    color: rgb(228, 228, 228);
+}
+
+iframe {
+    max-height: 50em;
+    overflow-y: auto;
+    margin: auto;
 }

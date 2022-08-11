@@ -17,8 +17,14 @@ function requestComments(timestamp) {
         },
 
     })
+    console.log(Date.now() / 1000, new Date().getTime())
+
 }
 
+// use requestComments function with the current date as the timestamp
+const date = new Date()
+const yesterday = (new Date(date.getTime())).setDate(date.getDate() - 1)
+requestComments(yesterday / 1000)
 document.getElementById("date-form").addEventListener("submit", function (e) {
     e.preventDefault();
     const date = document.getElementsByClassName("date-input")[0].value;

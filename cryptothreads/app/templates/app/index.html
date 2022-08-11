@@ -56,10 +56,22 @@
     {%endblock scripts%}
     {%block content%} 
     {%endblock content%}
-    <div class="row" style="margin-top:10em">
-      <b>Methodology:</b>
-      <p>Daily discussion threads on subreddits r/Cryptocurrency, r/EthTrader, r/Bitcoin were scraped for their top comments. Displaying these comments along with existing market conditions gives an insight on investor sentiment during bear/bull cycles.</p>
-      <p>Market data pulled from Coin Gecko API and Trading View, and Reddit comments received via Push Shift API. Tweets pulled via Tweepy, the Twitter API wrapper for Python.</p>
+    <div class="row" style="margin:5vw">
+      <div class="col-md-7" style="margin: auto">
+      <h2>Twitter bot:</h2>
+      <a class="twitter-timeline" data-width="400" data-height="600" data-theme="light" href="https://twitter.com/TopCryptoReddit?ref_src=twsrc%5Etfw">Tweets by TopCryptoReddit</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+      <div class="col-md-5">
+      <b><h2>Methodology:</h2></b>
+      <b>Subreddits</b>
+      <p>Daily discussion threads on subreddits r/Cryptocurrency, r/EthTrader, r/Bitcoin, r/EthFinance were used to find the most upvoted comments across these subreddits. Displaying these comments along with existing market conditions gives an insight on investor sentiment during bear/bull cycles.</p>
+      <b>Tweets</b>
+      <p>The 100 most popular Tweets relating to cryptocurrency are pulled for each day, starting after 7/25/2022 due to Twitter API constraints. </p>
+      <b>Data Sources</b>
+      <p>Market data pulled from Coin Gecko API and Trading View, and Reddit comments received via Push Shift API. Tweets pulled via Tweepy, the Twitter API wrapper for Python. These posts are sorted by key words such as "BTC" or "Bitcoin" and stored in a database. </p>
+      <b>Twitter Bot</b>
+      <p>The top Reddit comment of the day is automatically posted daily to the following twitter account: <a style="font-weight: 400;" href="https://twitter.com/TopCryptoReddit" target="_blank">Link</a></p>
+    </div>
     </div>
     <div class="row bg-dark company">
       <b><a href="https://www.kash.io/intellabridge" target="_blank">Intellabridge Inc.</a></b>

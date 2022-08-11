@@ -52,14 +52,24 @@ function populateComments(submissions, comments) {
 let disabled;
 function populateTweets(tweets) {
   // console.log(tweets)
+  const error = document.createElement('p')
+  const twitterLabel = document.getElementById("twitter")
+  const switchToggle = document.getElementById("switchInput")
+  const infoPopup = document.getElementsByClassName("popup")[0]
+  const slider = document.getElementsByClassName("slider")[0]
   var tweetsElement = document.querySelector(".tweets_card .card-body");
   tweetsElement.innerHTML = ''
+  slider.style.backgroundColor = "rgba(255, 87, 30, 1)"
+  slider.style.boxShadow = "0 0 1em #e66800"
+  slider.style.cursor = "pointer"
+  infoPopup.style.display = "none"
+  switchToggle.removeAttribute('disabled')
+  twitterLabel.style.color = "black"
   if (tweets.length === 0) {
     disabled = true
-    const error = document.createElement('p')
-    const twitterLabel = document.getElementById("twitter")
-    const switchToggle = document.getElementById("switchInput")
-    const infoPopup = document.getElementsByClassName("popup")[0]
+    slider.style.backgroundColor = "lightgrey"
+    slider.style.boxShadow = "0 0 0 rgba(0,0,0,0)"
+    slider.style.cursor = "default"
     infoPopup.style.display = "block"
     switchToggle.setAttribute('disabled', 'disabled')
     twitterLabel.style.color = "lightgrey"
@@ -97,7 +107,7 @@ function togglePlatform() {
         redditComments.style.display = 'block'
         tweets.style.display = "none"
         redditLabel.style.color = "rgba(255, 87, 30, 1)"
-        twitterLabel.style.color = disabled ? "lightgrey" : "black"
+        twitterLabel.style.color = "black"
       } else {
         redditComments.style.display = 'none'
         tweets.style.display = "block"

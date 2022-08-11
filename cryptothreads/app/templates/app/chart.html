@@ -106,10 +106,10 @@ var myChart = new Chart(ctx, {
 {%endblock%}
 <div class="row">
   <div class="col-md-7">
-    <div class="card">
+    <div class="date-card card">
       <div class="card-body">
-        <h1 class="current-date"></h1>
-        <h4 class="choose-date-header">Click the chart below, or choose a date here:</h4>
+        <h3 class="current-date"></h3>
+        <p>Click the chart below, or choose a date here:</p>
         <form id="date-form">
           <input class="bg-dark date-input" type="date" id="start" name="trip-start"
           value="2018-07-22"
@@ -136,7 +136,7 @@ var myChart = new Chart(ctx, {
   </div>
  <div class="col-md-5">
   <div class="card" id="social-media-title">
-    <h3><b>Toggle Platform</b></h3>
+    <h3>Toggle Platform</h3>
     <div class="card-title">
       <h4 id="reddit">Reddit</h4>
     <label onclick=togglePlatform() class="switch">
@@ -152,7 +152,7 @@ var myChart = new Chart(ctx, {
   </div>
   <div class="card comments_card">
     <div class="card-body">
-    <h1>Comments:</h1>
+    <h3>Comments:</h3>
     <div id="subreddits">
       <p class="btn subreddit-btn cryptocurrency" style="display:none"
       data-toggle="collapse" data-target=".comment_cryptocurrency" area-controls=".comment_cryptocurrency"
@@ -197,7 +197,7 @@ var myChart = new Chart(ctx, {
     <p>Score: <b id="top-comment-score"></b> | Date: <b id="top-comment-date"></b></p>
 
     <div class="card">
-      <h1 id="top-comment-text"></h1>
+      <h3 id="top-comment-text"></h3>
     </div>
   </div>
 </div>
